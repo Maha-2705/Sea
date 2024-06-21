@@ -17,6 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Sea"
         tools:targetApi="34">
+
+
+
+        <activity
+            android:name=".ui.activities.LocationNotAvailable"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.LanguageActivity"
+            android:exported="false"
+            android:label="@string/title_activity_language"
+            android:theme="@style/Base.Theme.Sea" />
         <activity
             android:name=".ui.activities.Discount"
             android:exported="false" />
@@ -26,9 +37,15 @@
         <activity
             android:name=".ui.activities.OrderStatusActivity"
             android:exported="true" />
-
-
-
+        <activity
+            android:name=".ui.activities.VerifyNumberActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.ManualMap"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.ManualLocation"
+            android:exported="true" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCzv33mFzK_SEECOHSx7EwIx-WbrypU1yo" />
@@ -36,23 +53,25 @@
         <activity
             android:name=".ui.activities.LocationActivity"
             android:exported="true" />
-
         <activity
             android:name=".ui.activities.ContactusActivity"
             android:exported="true" />
-
         <activity
             android:name=".ui.activities.DetailsActivity"
-            android:exported="false" />
+            android:launchMode="singleTop">
+        </activity>
+
         <activity
             android:name=".ui.activities.PayoutActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.LoginActivity"
             android:exported="true" />
-
         <activity
             android:name=".ui.activities.StartActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.MapsActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activities.MainActivity"

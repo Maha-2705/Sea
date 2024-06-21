@@ -1,7 +1,10 @@
 package com.capztone.seafishfy.ui.activities.fragments
 
+import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,24 +12,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.FragmentCartBinding
 import com.capztone.seafishfy.ui.activities.PayoutActivity
 import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
 import com.capztone.seafishfy.ui.activities.adapters.CartAdapter
 import com.capztone.seafishfy.ui.activities.ViewModel.CartViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.math.roundToInt
 
-public class CartFragment : Fragment(), CartProceedClickListener {
+class CartFragment : Fragment(), CartProceedClickListener {
     private lateinit var binding: FragmentCartBinding
     private lateinit var viewModel: CartViewModel
     private lateinit var cartAdapter: CartAdapter
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,13 +46,17 @@ public class CartFragment : Fragment(), CartProceedClickListener {
     ): View? {
         binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(CartViewModel::class.java)
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
         retrieveCartItems()
+        calculateDeliveryChargeAndProceed()
+        // Observe the total amount LiveData
+
         viewModel.retrieveCartItems { _, _, _, _, _, paths, _ ->
             val shopName = paths.firstOrNull() // Assuming the first item determines the shop name
             if (shopName != null) {
@@ -50,11 +66,12 @@ public class CartFragment : Fragment(), CartProceedClickListener {
                     showDialog()
                 }
             }
-            // Check if the cart is empty
-
+            binding.addMore.setOnClickListener {
+                // Navigate to the profile fragment
+                findNavController().navigate(R.id.action_cartFragment_to_homefragment)
+            }
             binding.cartProceedButton.setOnClickListener {
                 onCartProceedClicked()
-
             }
         }
     }
@@ -93,6 +110,160 @@ public class CartFragment : Fragment(), CartProceedClickListener {
                 }
             }
         }
+    }
+
+    private fun calculateDeliveryChargeAndProceed() {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+            fetchUserLocation(userId) { userLocation ->
+                fetchOrderValue(userId) { orderValue ->
+                    val cartItemsRef = database.getReference("user").child(userId).child("cartItems")
+                    val valueEventListener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val shops = mutableListOf<String>()
+                            val uniqueShops = HashSet<String>()
+                            dataSnapshot.children.forEach { cartItemSnapshot ->
+                                val path = cartItemSnapshot.child("path").getValue(String::class.java)
+                                path?.let { shop ->
+                                    if (shop !in uniqueShops) {
+                                        uniqueShops.add(shop)
+                                        shops.add(shop)
+                                    }
+                                }
+                            }
+                            // Display shop names in UI
+
+                            for (shop in shops) {
+                                getShopLocation(shop, userLocation, orderValue)
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Handle onCancelled
+                        }
+                    }
+                    cartItemsRef.addValueEventListener(valueEventListener)
+                }
+            }
+        }
+    }
+
+    private fun fetchUserLocation(userId: String, callback: (Location) -> Unit) {
+        val locationRef = database.getReference("Locations").child(userId)
+        locationRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val latitude = dataSnapshot.child("latitude").getValue(Double::class.java)
+                val longitude = dataSnapshot.child("longitude").getValue(Double::class.java)
+
+                if (latitude != null && longitude != null) {
+                    val userLocation = Location("").apply {
+                        this.latitude = latitude
+                        this.longitude = longitude
+                    }
+                    callback(userLocation)
+                } else {
+                    // Handle case when latitude or longitude is null
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle onCancelled
+            }
+        })
+    }
+
+    private fun fetchOrderValue(userId: String, callback: (Int) -> Unit) {
+        val cartItemsRef = database.getReference("user").child(userId).child("cartItems")
+        cartItemsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var orderValue = 0
+                dataSnapshot.children.forEach { cartItemSnapshot ->
+                    val foodPriceAny = cartItemSnapshot.child("foodPrice").getValue(Any::class.java)
+                    val foodQuantityAny = cartItemSnapshot.child("foodQuantity").getValue(Any::class.java)
+
+                    val foodPrice = when (foodPriceAny) {
+                        is String -> foodPriceAny.toDoubleOrNull()?.toInt() ?: 0
+                        is Long -> foodPriceAny.toInt()
+                        is Double -> foodPriceAny.toInt()
+                        else -> 0
+                    }
+
+                    val quantity = when (foodQuantityAny) {
+                        is String -> foodQuantityAny.toIntOrNull() ?: 1
+                        is Long -> foodQuantityAny.toInt()
+                        is Int -> foodQuantityAny
+                        else -> 1
+                    }
+
+                    orderValue += foodPrice * quantity
+                }
+                callback(orderValue)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle onCancelled
+            }
+        })
+    }
+
+    private fun getShopLocation(shopName: String, userLocation: Location, orderValue: Int) {
+        val shopRef = database.getReference("ShopLocations").child(shopName)
+        shopRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val latitude = dataSnapshot.child("latitude").getValue(Double::class.java)
+                val longitude = dataSnapshot.child("longitude").getValue(Double::class.java)
+
+                if (latitude != null && longitude != null) {
+                    val shopLocation = Location("").apply {
+                        this.latitude = latitude
+                        this.longitude = longitude
+                    }
+                    calculateDeliveryCharge(userLocation, shopLocation, orderValue)
+                } else {
+                    // Handle case when latitude or longitude is null
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle onCancelled
+            }
+        })
+    }
+
+    private fun calculateDeliveryCharge(userLocation: Location, shopLocation: Location, orderValue: Int) {
+        val distanceInKm = userLocation.distanceTo(shopLocation) / 1000
+        val baseFare = 20
+        val distanceCharge = if (orderValue > 500) 0 else (distanceInKm * 5).roundToInt()
+        val serviceFee = 5
+        val orderValueInt = orderValue
+        val gstOnOrderValue = (orderValueInt * 0.18).roundToInt()
+        val totalBeforeGst = baseFare + distanceCharge + orderValueInt + serviceFee
+        val grandTotal = totalBeforeGst + gstOnOrderValue
+
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            val userId = user.uid
+            val userRef = database.getReference("Total Amount").child(userId)
+            val totalRef = userRef.child("finalTotal")
+            totalRef.setValue(grandTotal)
+        }
+
+        binding.basefareAmount.text = baseFare.toString()
+        binding.distancechargesAmount.text = distanceCharge.toString()
+        binding.servicefeesAmount.text = serviceFee.toString()
+        binding.gstAmount.text = gstOnOrderValue.toString()
+        binding.totals.text = grandTotal.toString()
+        binding.ordervaluechargesAmount.text = orderValueInt.toString()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clean up
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     private fun removeFirstCartItem() {
@@ -163,7 +334,6 @@ public class CartFragment : Fragment(), CartProceedClickListener {
         }
     }
 
-
     override fun showDialog() {
         val alertDialog = AlertDialog.Builder(requireContext())
         alertDialog.setTitle("Remove Item")
@@ -186,7 +356,7 @@ public class CartFragment : Fragment(), CartProceedClickListener {
         foodImage: MutableList<String>,
         foodQuantities: MutableList<Int>
     ) {
-        if (isAdded && context != null){
+        if (isAdded && context != null) {
             val intent = Intent(requireContext(), PayoutActivity::class.java)
             intent.putExtra("foodItemName", ArrayList(foodName))
             intent.putExtra("foodItemPrice", ArrayList(foodPrice))
@@ -221,5 +391,4 @@ public class CartFragment : Fragment(), CartProceedClickListener {
 interface CartProceedClickListener {
     fun onCartProceedClicked()
     fun showDialog()
-
 }

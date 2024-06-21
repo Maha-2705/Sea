@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_bg"
+        android:layout_alignParentTop="true"
+        android:queryHint="Search location"
+        android:layout_margin="20dp"
+        android:iconifiedByDefault="false"/>
+
+    <Button
+        android:id="@+id/button_confirm_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:backgroundTint="@color/blue"
+        android:layout_marginEnd="20dp"
+        android:textSize="16dp"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/white"
+        android:layout_marginBottom="60dp"
+        android:text="Confirm Location" />
+</RelativeLayout>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#2E2B2B</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ash">#DDBFBBBB</color>
     <color name="textColor">#53E88B</color>
     <color name="light_grey">#EBEDF0</color>
+    <color name="Dgrey">#434347</color>
     <color name="dark_grey">#818C99</color>
     <color name="startColor">#53E88B</color>
     <color name="endColor">#15BE77</color>
@@ -12,7 +13,7 @@
     <color name="iconColor">#FEAD1D</color>
     <color name="colorPrimary">#5B1DCE</color>
     <color name="Lgreen">#AAEAC4</color>
-    <color name="lblue">#C4D7E6</color>
+    <color name="lblue">#EAEAED</color>
     <color name="blue">#4274DF</color>
     <color name="navy"> #316FF6</color>
     <color name="Dnavy">#010927</color>

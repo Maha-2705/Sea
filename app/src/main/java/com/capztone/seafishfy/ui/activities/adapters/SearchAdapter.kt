@@ -43,19 +43,31 @@ class SearchAdapter(
         private fun openDetailsActivity(position: Int) {
             val menuItem = filteredMenuItems[position]
 
-            // Intent to open details activity and Pass data
+            // Intent to open details activity and pass data
             val intent = Intent(requireContext, DetailsActivity::class.java).apply {
-                putExtra("MenuItemName", menuItem.foodName)
+                putExtra("MenuItemName", menuItem.foodName?.getOrNull(0) ?: "")
                 putExtra("MenuItemPrice", menuItem.foodPrice)
                 putExtra("MenuItemDescription", menuItem.foodDescription)
                 putExtra("MenuItemImage", menuItem.foodImage)
+                putExtra("MenuQuantity", menuItem.productQuantity)
+                putExtra("ShopName", menuItem.path) // Add ShopName to Intent
             }
-            requireContext.startActivity(intent)  // Start the  details Activity
+            requireContext.startActivity(intent)  // Start the details Activity
         }
 
         fun bind(menuItem: MenuItem) {
             binding.apply {
-                menuFoodName.text = menuItem.foodName
+                // Join food names with commas
+                val foodName =
+                    menuItem.foodName?.toString()?.replace("[", "")?.replace("]", "") ?: ""
+                val slashIndex = foodName.indexOf("/")
+                if (slashIndex != -1 && slashIndex < foodName.length - 1) {
+                    menuFoodName.text = foodName.substring(0, slashIndex + 1).trim()
+                     menuFoodName1.text = foodName.substring(slashIndex + 1).trim()
+                } else {
+                    menuFoodName.text = foodName
+                    menuFoodName1.text = ""
+                }
                 val priceWithPrefix = "₹${menuItem.foodPrice}" // Prefixing the price with "₹"
                 menuPrice.text = priceWithPrefix
                 val url = Uri.parse(menuItem.foodImage)
@@ -63,13 +75,16 @@ class SearchAdapter(
             }
         }
     }
-
     fun filter(query: String) {
         filteredMenuItems = if (query.isEmpty()) {
             menuItems
         } else {
-            menuItems.filter { it.foodName?.contains(query, ignoreCase = true) == true }
+            menuItems.filter { menuItem ->
+                // Check if the English name contains the query
+                menuItem.foodName?.get(0)?.contains(query, ignoreCase = true) ?: false
+            }
         }
         notifyDataSetChanged()
     }
+
 }

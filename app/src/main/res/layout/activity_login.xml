@@ -23,7 +23,7 @@
         android:id="@+id/textViewLoginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inika_regular"
+        android:fontFamily="@font/roboto"
         android:text="Sea Food"
         android:textStyle="bold"
         android:textSize="40sp"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/inika_regular"
+        android:fontFamily="@font/roboto"
         android:text="Deliver favourite sea creatures"
         android:textColor="@color/black"
         android:textSize="16sp"
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:fontFamily="@font/inika_regular"
+        android:fontFamily="@font/roboto"
         android:text="@string/login_to_your_account"
         android:textColor="@color/navy"
         android:textStyle="bold"
@@ -63,17 +63,19 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/googleLoginbutton"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:layout_marginTop="480dp"
+        android:layout_marginEnd="58dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="430dp"
 
         android:background="@drawable/whitebutton"
         android:drawableStart="@drawable/google_icon"
         android:paddingStart="40dp"
-        android:fontFamily="@font/inika_regular"
+        android:fontFamily="@font/roboto"
         android:padding="0dp"
         android:text="@string/google"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textColor="@color/black"
         android:textAllCaps="false"
         app:layout_constraintTop_toTopOf="parent"
@@ -81,6 +83,79 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLogin" />
 
+
+    <LinearLayout
+        android:id="@+id/ll_phone_num"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/whitebutton1"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/googleLoginbutton">
+
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:padding="10dp"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_autoDetectLanguage="true"
+            app:ccp_countryAutoDetectionPref="SIM_ONLY"
+            app:ccp_defaultLanguage="ENGLISH"
+            app:ccp_rememberLastSelection="true"
+            app:ccp_showPhoneCode="true" />
+
+        <EditText
+            android:id="@+id/etPhoneNum"
+            android:layout_width="210dp"
+            android:layout_height="57dp"
+            android:paddingStart="10dp"
+            android:fontFamily="@font/roboto"
+            android:padding="0dp"
+            android:background="@null"
+            android:hint="Enter Mobile Number"
+            android:textSize="16sp"
+            android:textColorHint="#434347"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewLogin"
+            android:autofillHints="number" />
+
+
+
+    </LinearLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_get_otp"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="58dp"
+        android:fontFamily="@font/roboto"
+        android:background="@drawable/greenbuttongradent"
+        android:text="Get OTP"
+        app:cornerRadius="100dp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        app:icon="@drawable/ic_baseline_perm_phone_msg_24"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_phone_num" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,12 +33,36 @@ class LoginActivity : AppCompatActivity() {
         configureGoogleSignIn()
 
         if (viewModel.isUserLoggedIn()) {
-            startActivity(Intent(this, LocationActivity::class.java))
+            startActivity(Intent(this, LanguageActivity::class.java))
             finish()
         }
 
         binding.googleLoginbutton.setOnClickListener {
             signIn()
+        }
+
+        binding.btnGetOtp.setOnClickListener {
+            validateNumber()
+        }
+    }
+
+    private fun validateNumber() {
+
+        if (binding.etPhoneNum.editableText?.toString()!!.isEmpty()) {
+            binding.etPhoneNum.error = "Enter your Phone Number"
+            binding.etPhoneNum.requestFocus()
+            return
+        }
+
+        if (binding.etPhoneNum.editableText?.toString()!!.count() == 10) {
+            binding.etPhoneNum.clearFocus()
+            val intent = Intent(this, VerifyNumberActivity::class.java).apply {
+                putExtra(phoneNumberKey, binding.etPhoneNum.editableText?.toString())
+            }
+            startActivity(intent)
+            finish()
+        } else {
+            Toast.makeText(this, "Enter 10 digit number", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -85,5 +109,6 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
+        const val phoneNumberKey = "PHONE_NUMBER_KEY"
     }
 }

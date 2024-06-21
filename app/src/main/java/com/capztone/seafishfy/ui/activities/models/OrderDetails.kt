@@ -2,10 +2,8 @@ package com.capztone.seafishfy.ui.activities.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
-import java.util.*
 
-class OrderDetails() : Serializable, Parcelable {
+class OrderDetails() : Parcelable {
     var userUid: String? = null
     var userName: String? = null
     var foodNames: MutableList<String>? = null
@@ -22,13 +20,14 @@ class OrderDetails() : Serializable, Parcelable {
     var adjustedTotalAmount: String? = null
     var orderDate: String? = null
     var ShopNames: MutableList<String>? = null
+    var selectedSlot: String? = null
+    var fooddescription: MutableList<String>? = null// Make sure it's mutable if needed
 
     constructor(parcel: Parcel) : this() {
         userUid = parcel.readString()
         userName = parcel.readString()
         address = parcel.readString()
         phone = parcel.readString()
-
         orderAccepted = parcel.readByte() != 0.toByte()
         paymentReceived = parcel.readByte() != 0.toByte()
         itemPushKey = parcel.readString()
@@ -37,25 +36,30 @@ class OrderDetails() : Serializable, Parcelable {
         adjustedTotalAmount = parcel.readString()
         orderDate = parcel.readString()
         ShopNames = parcel.createStringArrayList()
+        selectedSlot = parcel.readString()
+    // Read selectedSlot from parcel
     }
 
     constructor(
-        userId: String,
-        name: String,
-        foodItemName: ArrayList<String>,
-        foodItemPrice: ArrayList<String>,
-        foodItemImage: ArrayList<String>,
-        foodItemQuantities: ArrayList<Int>,
-        address: String,
-        phoneNumber: String,
-        time: String,
-        paymentMethod: String,
+        userId: String?,
+        name: String?,
+        foodItemName: MutableList<String>?,
+        foodItemPrice: MutableList<String>?,
+        foodItemImage: MutableList<String>?,
+        foodItemQuantities: MutableList<Int>?,
+        address: String?,
+        phoneNumber: String?,
+        time: String?,
+        paymentMethod: String?,
         adjustedTotalAmount: Int,
         itemPushKey: String?,
-        orderDate: String, // New parameter for order date
-        b: Boolean,
-        b1: Boolean,
-        pathContainer: MutableList<String>
+        orderDate: String?,
+        orderAccepted: Boolean,
+        paymentReceived: Boolean,
+        ShopNames: MutableList<String>?,
+        selectedSlot: String?,
+        foodItemDescription: MutableList<String>?
+// Add selectedSlot to constructor
     ) : this() {
         this.userUid = userId
         this.userName = name
@@ -69,11 +73,13 @@ class OrderDetails() : Serializable, Parcelable {
         this.paymentMethod = paymentMethod
         this.adjustedTotalAmount = adjustedTotalAmount.toString()
         this.itemPushKey = itemPushKey
+        this.orderDate = orderDate
         this.orderAccepted = orderAccepted
         this.paymentReceived = paymentReceived
-        this.orderDate = orderDate // Set order date
-        this.ShopNames = pathContainer
-
+        this.ShopNames = ShopNames
+        this.selectedSlot = selectedSlot
+        this.fooddescription =  foodItemDescription
+// Initialize selectedSlot in the constructor
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -87,8 +93,9 @@ class OrderDetails() : Serializable, Parcelable {
         parcel.writeString(currentTime)
         parcel.writeString(paymentMethod)
         parcel.writeString(adjustedTotalAmount)
-        parcel.writeString(orderDate) // Write order date
+        parcel.writeString(orderDate)
         parcel.writeStringList(ShopNames)
+        parcel.writeString(selectedSlot) // Write selectedSlot to parcel
     }
 
     override fun describeContents(): Int {

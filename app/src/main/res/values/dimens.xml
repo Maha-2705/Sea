@@ -7,4 +7,7 @@
     <dimen name="desc_text_size">18sp</dimen>
     <dimen name="menu_width">150dp</dimen>
     <dimen name="half_standard_padding">8dp</dimen>
+    <!-- res/values/dimens.xml -->
+    <dimen name="recycler_item_spacing">8dp</dimen>
+
 </resources>

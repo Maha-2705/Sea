@@ -8,15 +8,16 @@
     android:orientation="vertical"
     tools:context=".ui.activities.fragments.ProfileFragment">
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:text="My Account"
-      android:textSize="19dp"
-      android:paddingTop="15dp"
-      android:paddingStart="25dp"
-      android:textColor="@color/white"
-      android:background="@drawable/shape"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="My Account"
+        android:textSize="19dp"
+        android:fontFamily="@font/roboto"
+        android:paddingTop="35dp"
+        android:paddingStart="25dp"
+        android:textColor="@color/white"
+        android:background="@drawable/shape"/>
 
     <RelativeLayout
         android:id="@+id/container_profile"
@@ -43,10 +44,10 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@id/image_location"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="My profile"
             android:textColor="@color/black"
-            android:textSize="17sp"
+            android:textSize="16sp"
             tools:ignore="RelativeOverlap" />
 
         <ImageView
@@ -85,10 +86,10 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@id/image_settings"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="My orders"
             android:textColor="@color/black"
-            android:textSize="17sp"
+            android:textSize="16sp"
             tools:ignore="RelativeOverlap" />
 
         <ImageView
@@ -102,6 +103,47 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/container_language"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_products_list_item"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/image_language"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:background="@drawable/bg_profile"
+            android:padding="12dp"
+            android:src="@drawable/baseline_language_24"
+            app:tint="@color/navy"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/image_language"
+            android:fontFamily="@font/roboto"
+            android:text="Language"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:ignore="RelativeOverlap" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="8dp"
+            android:src="@drawable/ic_right"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/container_aboutus"
         android:layout_width="match_parent"
@@ -127,10 +169,52 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@id/image_service"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="About us"
             android:textColor="@color/black"
-            android:textSize="17sp"
+            android:textSize="16sp"
+            tools:ignore="RelativeOverlap" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="8dp"
+            android:src="@drawable/ic_right"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_products_list_item"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/addressimage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_profile"
+            android:padding="8dp"
+            android:src="@drawable/home"
+            app:tint="@color/navy"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/addressimage"
+            android:fontFamily="@font/roboto"
+            android:text="Addresses"
+
+            android:textColor="@color/black"
+            android:textSize="16sp"
             tools:ignore="RelativeOverlap" />
 
         <ImageView

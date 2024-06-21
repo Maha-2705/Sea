@@ -94,15 +94,17 @@
                 android:id="@+id/cid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:fontFamily="@font/lato_regular"
+                android:textSize="15dp"
+
+                android:fontFamily="@font/roboto"
                 android:textColor="@color/black"
                 android:text="Customer Id :"/>
 
             <TextView
                 android:id="@+id/oid"
-                android:textSize="16dp"
-                android:fontFamily="@font/lato_regular"
+                android:textSize="15dp"
+
+                android:fontFamily="@font/roboto"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,11 +113,12 @@
 
             <TextView
                 android:id="@+id/foodName"
-                android:textSize="16dp"
-                android:fontFamily="@font/lato_regular"
+                android:textSize="15dp"
+                android:fontFamily="@font/roboto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+
                 android:textColor="@color/black"
                 android:text="Food Name :"/>
 
@@ -130,9 +133,10 @@
                 android:id="@+id/foodPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
+                android:textSize="15dp"
                 android:textStyle="bold"
-                android:fontFamily="@font/lato_regular"
+
+                android:fontFamily="@font/roboto"
                 android:textColor="@color/blue"
                 android:text="Food Price:"/>
 
@@ -141,8 +145,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="80dp"
-                android:textSize="16dp"
-                android:fontFamily="@font/lato_regular"
+
+                android:textSize="15dp"
+                android:fontFamily="@font/roboto"
                 android:textColor="@color/black"
                 android:text="Quantity :"/>
 
@@ -154,9 +159,9 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="290dp"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textColor="@color/white"
-            android:fontFamily="@font/lato_regular"
+            android:fontFamily="@font/roboto"
             android:backgroundTint="@color/navy"
             android:layout_marginStart="20dp"
             android:text="Order Status" />
@@ -165,11 +170,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel Order"
-            android:textSize="16dp"
-            android:fontFamily="@font/lato_regular"
+            android:textSize="15dp"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:layout_marginTop="290dp"
-            android:layout_marginStart="220dp"/>
+            android:layout_marginStart="200dp"/>
         <TextView
             android:id="@+id/cancelText"
             android:layout_width="wrap_content"
@@ -186,11 +191,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Order Time"
-            android:textSize="16dp"
-            android:fontFamily="@font/lato_regular"
+            android:textSize="15dp"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:layout_marginTop="340dp"
-            android:layout_marginStart="250dp"/>
+            android:layout_marginStart="230dp"/>
 
 
     </androidx.cardview.widget.CardView>

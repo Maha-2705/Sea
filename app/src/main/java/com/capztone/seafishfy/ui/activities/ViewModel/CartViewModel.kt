@@ -2,6 +2,8 @@
 
 package com.capztone.seafishfy.ui.activities.ViewModel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capztone.seafishfy.ui.activities.adapters.CartAdapter
@@ -14,6 +16,39 @@ class CartViewModel : ViewModel() {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var userId: String = auth.currentUser?.uid ?: ""
+    private val _totalAmount = MutableLiveData<Int>()
+    val totalAmount: LiveData<Int> get() = _totalAmount
+
+
+
+    init {
+        calculateTotal()
+    }
+
+
+    private fun calculateTotal() {
+        val userId = auth.currentUser?.uid ?: ""
+        val cartItemsReference = database.reference.child("user").child(userId).child("cartItems")
+
+        cartItemsReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var total = 0.0
+                for (cartSnapshot in snapshot.children) {
+                    val quantity = cartSnapshot.child("quantity").getValue(Int::class.java) ?: 1 // Default quantity is 1
+                    val foodPriceString = cartSnapshot.child("foodPrice").getValue(String::class.java) ?: "0.0"
+                    val foodPrice = foodPriceString.toDoubleOrNull() ?: 0.0
+                    total += quantity * foodPrice
+                }
+                _totalAmount.value = total.toInt()// Convert total to integer and then back to double
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error appropriately
+            }
+        })
+    }
+
+
 
     fun retrieveCartItems(
         cartItemsCallback: (foodNames: MutableList<String>, foodPrices: MutableList<String>, foodDescriptions: MutableList<String>, foodIngredients: MutableList<String>, foodImageUri: MutableList<String>, paths: MutableList<String>, quantity: MutableList<Int>) -> Unit
@@ -69,6 +104,7 @@ class CartViewModel : ViewModel() {
             itemReference.removeValue()
         }
     }
+
 
     fun isCartEmpty(cartItemsCallback: (Boolean) -> Unit) {
         viewModelScope.launch {

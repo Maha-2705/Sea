@@ -34,9 +34,17 @@ class ProfileFragment : Fragment() {
             // Navigate to the profile fragment
             findNavController().navigate(R.id.action_profileFragment_to_historyFragment)
         }
+        binding.containerLanguage.setOnClickListener {
+            // Navigate to the profile fragment
+            findNavController().navigate(R.id.action_profileFragment_to_language)
+        }
         binding.containerAboutus.setOnClickListener {
             // Navigate to the profile fragment
             findNavController().navigate(R.id.action_profileFragment_to_about)
+        }
+        binding.containerAddress.setOnClickListener {
+            // Navigate to the profile fragment
+            findNavController().navigate(R.id.action_profileFragment_to_AddressFragment)
         }
     }
 

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="15dp"
+        android:backgroundTint="@color/white"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/shopImageView1"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="10dp"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/shopImageView"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@tools:sample/avatars"/>
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/shopTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textFontWeight="700"
+                android:lineHeight="24px"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/roboto"
+                android:text="Shop 1"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/shopTextView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textFontWeight="600"
+                android:lineHeight="20px"
+                android:layout_marginStart="200dp"
+                android:layout_marginTop="23dp"
+                android:fontFamily="@font/roboto"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/shopTextVie4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textFontWeight="700"
+                android:lineHeight="24px"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="70dp"
+                android:fontFamily="@font/roboto"
+                android:text="UPTO ₹500"
+                android:textColor="@color/Dark_navy"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/shopTextView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textFontWeight="600"
+                android:lineHeight="20px"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="110dp"
+                android:fontFamily="@font/roboto"
+                android:text="Free Delivery"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

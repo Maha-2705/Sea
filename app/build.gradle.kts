@@ -37,6 +37,7 @@ android {
     }
     buildFeatures{
         viewBinding=true
+        dataBinding=true
     }
 }
 
@@ -53,8 +54,7 @@ dependencies {
 
 //viewpager2
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
-
-
+    implementation ("com.hbb20:ccp:2.6.0")
 //indicator
     implementation ("me.relex:circleindicator:2.1.6")
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
@@ -74,7 +74,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.maps.android:android-maps-utils:3.8.2")
     implementation ("com.google.maps.android:android-maps-utils:3.8.2")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.2")
+
+    implementation("com.google.firebase:firebase-storage-ktx:21.0.0")
     testImplementation("junit:junit:4.13.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")

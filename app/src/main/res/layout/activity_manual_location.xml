@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context=".ui.activities.ManualLocation">
+     <ImageView
+         android:layout_width="20dp"
+         android:layout_height="20dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          android:layout_marginTop="54dp"
+          android:layout_marginStart="15dp"
+          android:src="@drawable/map"/>
+
+     <TextView
+         android:id="@+id/manualSelect"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:textColor="@color/black"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         android:hint="Select Location Manually"
+         android:fontFamily="@font/roboto"
+         android:background="@drawable/blue"
+         android:textSize="16sp"
+         android:paddingStart="50dp"
+         android:paddingTop="10dp"
+         android:paddingBottom="10dp"
+         android:layout_marginTop="43dp"
+          />
+
+     <EditText
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:id="@+id/doorNo"
+         android:textColor="@color/ThickAsh"
+
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:fontFamily="@font/roboto"
+         android:layout_marginTop="120dp"
+         android:background="@drawable/blue"
+
+         android:paddingStart="20dp"
+         android:hint="DoorNo/FlatNo"/>
+     <EditText
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:id="@+id/Street"
+         android:textColor="@color/ThickAsh"
+android:fontFamily="@font/roboto"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@id/doorNo"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="15dp"
+         android:background="@drawable/blue"
+         android:paddingStart="20dp"
+         android:hint="StreetName"/>
+     <EditText
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:id="@+id/City"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@id/Street"
+          app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="15dp"
+         android:textColor="@color/ThickAsh"
+         android:fontFamily="@font/roboto"
+         android:background="@drawable/blue"
+         android:paddingStart="20dp"
+         android:hint="City"/>
+
+     <Button
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:id="@+id/Save"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@id/Street"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="300dp"
+         android:text="Save"
+         android:fontFamily="@font/roboto"
+         android:textColor="@color/white"
+         android:textSize="16dp"
+         android:backgroundTint="@color/navy"
+         android:paddingStart="20dp"
+          />
+
+     <Button
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:id="@+id/Cancel"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@id/Save"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="15dp"
+         android:text="Cancel"
+         android:fontFamily="@font/roboto"
+         android:textColor="@color/white"
+
+         android:textSize="16dp"
+         android:backgroundTint="@color/navy"
+         android:paddingStart="20dp"
+         />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

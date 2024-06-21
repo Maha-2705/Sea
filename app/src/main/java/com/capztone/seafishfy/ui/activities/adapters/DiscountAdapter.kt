@@ -60,11 +60,13 @@ class DiscountAdapter(
 
             // Intent to open details activity and Pass data
             val intent = Intent(context, DetailsActivity::class.java)
-            intent.putExtra("DiscountItemName", discountItem.foodNames)
+            intent.putExtra("DiscountItemName", discountItem.foodNames?.getOrNull(0) ?: "")
             intent.putExtra("DiscountItemPrice", discountItem.foodPrices)
             intent.putExtra("DiscountItemDescription", discountItem.foodDescriptions)
             intent.putExtra("DiscountItemImage", discountItem.foodImages)
             intent.putExtra("DiscountAmount", discountItem.discounts)
+            intent.putExtra("DiscountQuantity", discountItem.productQuantity)
+
 
             context.startActivity(intent)  // Start the details Activity
         }
@@ -73,12 +75,19 @@ class DiscountAdapter(
         fun bind(position: Int) {
             val discountItem = discountItems[position]
             binding.apply {
-                discountfoodname.text = discountItem.foodNames
-                val priceWithPrefix = "₹${discountItem.foodPrices}" // Prefixing the price with "₹"
-                discountprice.text = priceWithPrefix
-                discounttextview.text = discountItem.discounts
-                val url = Uri.parse(discountItem.foodImages)
-                Glide.with(context).load(url).into(discountimage)
+                val foodName = discountItem.foodNames?.toString()?.replace("[", "")?.replace("]", "") ?: ""
+                val slashIndex = foodName.indexOf("/")
+                if (slashIndex != -1 && slashIndex < foodName.length - 1) {
+                    discountfoodname.text = foodName.substring(0, slashIndex + 1).trim()
+                    menuFoodName2.text = foodName.substring(slashIndex + 1).trim()
+                } else {
+                    discountfoodname.text = foodName
+                    menuFoodName2.text = ""
+                }
+                discounttextview.text=discountItem.discounts
+                Qty.text = "${discountItem.productQuantity}"
+                discountprice.text = "₹${discountItem.foodPrices}"
+                Glide.with(context).load(Uri.parse(discountItem.foodImages)).into(discountimage)
             }
         }
     }

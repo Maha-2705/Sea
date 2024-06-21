@@ -9,12 +9,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bgColor"
+        android:background="@color/white"
         tools:context=".ui.activities.fragments.ShopOneFragment">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Shop 1"
+            android:text=""
             android:textStyle="bold"
             android:textSize="23dp"
             android:textAlignment="center"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            tools:listitem="@layout/popular_items"
+            tools:listitem="@layout/near_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +55,8 @@
             android:id="@+id/textView19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="275dp"
+            android:layout_marginStart="10dp"
+
             android:layout_marginTop="957dp"
             android:fontFamily="@font/inika_regular"
             android:text="Dry Fish"
@@ -65,7 +65,7 @@
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+
 
             />
 
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            tools:listitem="@layout/popular_items"
+            tools:listitem="@layout/menu_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            tools:listitem="@layout/popular_items"
+            tools:listitem="@layout/menu_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,48 +120,33 @@
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="245dp"
+            android:layout_marginStart="10dp"
+
             android:layout_marginTop="625dp"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="@string/deal_of_the_day"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
 
-        <TextView
-            android:id="@+id/menu_item_textView"
-            android:layout_width="80dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="290dp"
-            android:background="@drawable/textviewshape"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:text="@string/view_menu"
-            android:textColor="@color/navy"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shop1pic" />
+
 
         <TextView
             android:id="@+id/textView27"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="290dp"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="Flash Sale"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shop1pic"/>
 
@@ -172,7 +157,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="160dp"
             android:layout_marginEnd="170dp"
-            android:fontFamily="@font/lato_bold"
+            android:fontFamily="@font/roboto"
             android:text="(It opens only 5PM)"
             android:textColor="@color/green"
             android:textSize="18sp"

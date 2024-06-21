@@ -11,11 +11,13 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.FragmentAccountBinding
 import com.capztone.seafishfy.ui.activities.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 
 class AccountFragment : Fragment() {
@@ -41,12 +43,12 @@ class AccountFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
-        binding.bannerName.text = user?.displayName
         userNameEditText = binding.profileName
         userEmailEditText = binding.profileEmail
 
-        userNameEditText.setText(user?.displayName)
-        userEmailEditText.setText(user?.email)
+        // Fetch and display user details
+        fetchAndDisplayUserDetails(user)
+
         binding.logout.setOnClickListener {
             signOut()
         }
@@ -55,9 +57,6 @@ class AccountFragment : Fragment() {
         binding.text.setOnClickListener {
             signOut()
         }
-
-
-
 
         userNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -87,10 +86,29 @@ class AccountFragment : Fragment() {
                 }
             }
         })
+    }
 
-        Glide.with(this)
-            .load(user?.photoUrl)
-            .into(binding.profileImage)
+    private fun fetchAndDisplayUserDetails(user: FirebaseUser?) {
+        if (user != null) {
+            val displayName = user.displayName ?: "No Name"
+            val email = user.email ?: "No Email"
+            val photoUrl = user.photoUrl
+
+            binding.bannerName.text = displayName
+            userNameEditText.setText(displayName)
+            userEmailEditText.setText(email)
+
+            if (photoUrl != null) {
+                Glide.with(this)
+                    .load(photoUrl)
+                    .into(binding.profileImage)
+            } else {
+                // Load a default image if no photo URL is available
+                Glide.with(this)
+                    .load(R.drawable.baseline_account_circle_24)  // replace with your default image resource
+                    .into(binding.profileImage)
+            }
+        }
     }
 
     private fun signOut() {

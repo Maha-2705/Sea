@@ -39,6 +39,10 @@ class HistoryFragment : Fragment() {
   binding.recentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
   binding.recentRecyclerView.adapter = adapter
 
+  binding.recentBackButton.setOnClickListener {
+   requireActivity().onBackPressed()
+  }
+
   observeOrders()
  }
 

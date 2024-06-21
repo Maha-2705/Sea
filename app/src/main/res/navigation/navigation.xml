@@ -5,11 +5,7 @@
     android:id="@+id/navigation"
     app:startDestination="@id/homeFragment">
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.capztone.seafishfy.ui.activities.fragments.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.capztone.seafishfy.ui.activities.fragments.CartFragment"
@@ -17,7 +13,7 @@
         tools:layout="@layout/fragment_cart" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.capztone.seafishfy.ui.activities.fragments.SearchFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.FavouriteFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
@@ -35,6 +31,11 @@
         android:name="com.capztone.seafishfy.ui.activities.ContactusActivity"
         android:label="activity_contact"
         tools:layout="@layout/activity_contactus" />
+    <activity
+        android:id="@+id/languageActivity"
+        android:name="com.capztone.seafishfy.ui.activities.LanguageActivity"
+        android:label="activity_language"
+        tools:layout="@layout/activity_language" />
     <activity
         android:id="@+id/detailsActivity"
         android:name="com.capztone.seafishfy.ui.activities.DetailsActivity"
@@ -75,6 +76,45 @@
         android:name="com.capztone.seafishfy.ui.activities.fragments.ShopSixFragment"
         android:label="fragment_shopsix"
         tools:layout="@layout/fragment_shop_six" />
+    <action
+    android:id="@+id/action_profileFragment_to_AddressFragment"
+    app:destination="@id/addressFragment" />
+   <fragment
+    android:id="@+id/addressFragment"
+    android:name="com.capztone.seafishfy.ui.activities.fragments.AddressFragment"
+    android:label="AddressFragment" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_productSearchFragment"
+            app:destination="@id/productSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/freshFishFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.FreshFishFragment"
+        android:label="FreshFishFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/dryFishFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.DryFishFragment"
+        android:label="DryFishFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/picklesFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.PicklesFragment"
+        android:label="PicklesFragment" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/productSearchFragment"
+        android:name="com.capztone.seafishfy.ui.activities.fragments.ProductSearchFragment"
+        android:label="ProductSearchFragment" >
+
+    </fragment>
 
 
     <action
@@ -105,7 +145,21 @@
         android:id="@+id/action_profileFragment_to_about"
         app:destination="@id/contactusActivity" />
     <action
+        android:id="@+id/action_profileFragment_to_language"
+        app:destination="@id/languageActivity" />
+    <action
         android:id="@+id/action_detailsActivity_to_cartFragment"
         app:destination="@id/cartFragment" />
-
+    <action
+        android:id="@+id/action_cartFragment_to_homefragment"
+        app:destination="@id/homeFragment" />
+    <action
+        android:id="@+id/action_homeFragment_to_FreshFishFragment"
+        app:destination="@id/freshFishFragment" />
+    <action
+        android:id="@+id/action_homeFragment_to_DryFishFragment"
+        app:destination="@id/dryFishFragment" />
+    <action
+        android:id="@+id/action_homeFragment_to_PicklesFragment"
+        app:destination="@id/picklesFragment" />
 </navigation>

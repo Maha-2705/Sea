@@ -1,18 +1,19 @@
 package com.capztone.seafishfy.ui.activities.fragments
 
+
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
+import com.google.firebase.storage.FirebaseStorage
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
-import kotlin.math.*
 import androidx.annotation.RequiresApi
-import kotlin.random.Random
 
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,265 +22,124 @@ import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.capztone.seafishfy.databinding.FragmentHomeBinding
 import com.capztone.seafishfy.ui.activities.ContactusActivity
-import com.capztone.seafishfy.ui.activities.Discount
 import com.capztone.seafishfy.ui.activities.LocationActivity
 import com.capztone.seafishfy.ui.activities.models.DiscountItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.*
-import androidx.navigation.fragment.findNavController
-import android.Manifest
-import android.content.ContentValues.TAG
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import com.capztone.seafishfy.R
-import androidx.fragment.app.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-import android.graphics.Color
 import android.util.Log
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.capztone.seafishfy.ui.activities.adapters.ExploreShopAdapter
+import com.capztone.seafishfy.ui.activities.adapters.HomeDiscountAdapter
+import com.capztone.seafishfy.ui.activities.adapters.NearItemAdapter
+import com.capztone.seafishfy.ui.activities.adapters.PreviousOrderAdapter
+import com.capztone.seafishfy.ui.activities.models.MenuItem
+import com.capztone.seafishfy.ui.activities.models.PreviousItem
 import com.capztone.seafishfy.ui.activities.ViewModel.HomeViewModel
-import androidx.core.text.HtmlCompat
+import com.capztone.seafishfy.ui.activities.adapters.DealItemAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var database: FirebaseDatabase
+    private lateinit var databases: FirebaseDatabase
+    private lateinit var viewModel: HomeViewModel
     private lateinit var discountItems: MutableList<DiscountItem>
     private lateinit var databaseReference: DatabaseReference
-    private val shop1Location = LatLng(8.198971, 77.303314)
-    private val shop2Location = LatLng(	13.0300, 80.2421)
-    private val shop3Location = LatLng(
-        13.0640, 77.6504)
-    private val shop4Location = LatLng(8.8076189, 78.1283788)
-    private val shop6Location = LatLng(8.3451335,77.18204)
-    private val shop5Location = LatLng(8.3223816, 77.1729525)
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val viewModel: HomeViewModel by viewModels()
-    private val imageResources = arrayOf(
-        R.drawable.ribbon1,
-        R.drawable.ribbon2,
-        R.drawable.ribbon3,
-        R.drawable.ribbon4
-    )
+    private lateinit var auth: FirebaseAuth
+    private lateinit var databaseRef: DatabaseReference
+    private lateinit var currentUserId: String
+    private val menuItems = mutableListOf<MenuItem>()
+    private lateinit var userId: String
+    private val previousItem = mutableListOf<PreviousItem>()
+    private lateinit var adapter: NearItemAdapter
+    private lateinit var dealadapter: DealItemAdapter
+    private lateinit var exploreShopAdapter: ExploreShopAdapter
+    private lateinit var adapter1: PreviousOrderAdapter
+    private val currentUserID: String? = FirebaseAuth.getInstance().currentUser?.uid
+    private lateinit var sharedPreferences: SharedPreferences
 
+    private val buyHistory: MutableList<PreviousItem> = mutableListOf()
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        adapter1 = PreviousOrderAdapter(previousItem )
+        binding.previousrRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            adapter = adapter1
+        }
+
         observeViewModel()
 
+        database = FirebaseDatabase.getInstance()
+        databaseReference = database.getReference("Locations")
+        databaseRef = FirebaseDatabase.getInstance().reference
+        currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("locations")
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        databases = FirebaseDatabase.getInstance()
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-        // Check if user ID exists
-
-
-        if (hasLocationPermission()) {
-            getUserLocation { userLocation ->
-                if (userLocation != null) {
-                    val shopLocations = listOf(shop1Location, shop2Location, shop3Location,shop4Location,shop5Location,shop6Location)
-                    for (i in 0 until shopLocations.size) {
-                        val cardView = getCardViewByIndex(i + 5) // Adjust index to match card view IDs
-                        val shopLocation = shopLocations[i]
-                        val distance = calculateDistance(userLocation, shopLocation)
-                        if (distance <= 5) {
-                            // Enable and make clickable
-                            cardView.alpha= 1.0f
-                            cardView.setOnClickListener {
-                                // Navigate to respective shop fragment
-                                navigateToShopFragment(i + 5) // Adjust index to match card view IDs
-                            }
-                        } else {
-                            // Disable and make unclickable
-                            cardView.alpha = 0.4f
-                            binding.cardView.setBackgroundColor(Color.parseColor("#303235")) // Replace "#C0C0C0" with your desired color code
+        auth = FirebaseAuth.getInstance()
 
 
-                            cardView.setOnClickListener {
-                                // Show toast indicating the shop is not available for the user's location
-                                ToastHelper.showCustomToast(requireContext(), "This shop is not delivery for your locations")
-                                cardView.isEnabled=false
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            // Request location permission if not granted
-            requestLocationPermission()
+        sharedPreferences = requireContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+
+
+        exploreShopAdapter = ExploreShopAdapter(listOf(), this)
+
+        binding.Explorereclyview.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = exploreShopAdapter
         }
 
-        userId?.let { uid ->
-            // Retrieve data under "locations" path for the current user
-            val userLocationRef = databaseReference.child(uid)
-            userLocationRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        // Retrieve shopname for the current user
-                        val shopNames = snapshot.child("shopname").getValue(String::class.java)
-                        shopNames?.let { shops ->
-                            // Split the shop names by comma and handle each one individually
-                            val shopNameList = shops.split(",").map { it.trim() }
-                            shopNameList.forEach { shop ->
-                                // Blur the card view associated with the shopname
-                                markUserShopsAsNormal(shopNames)
-                            }
-                        }
-                    } else {
-                        // Handle case where data doesn't exist for the user
-                        // For example, if the user hasn't set their shopname yet
-                    }
-                }
+        binding.Nearitemrecycler.apply {
+            adapter = NearItemAdapter(menuItems,requireContext())
+            binding.Nearitemrecycler.layoutManager =
+                GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+            // Update adapter with new data
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle error
-                }
-            })
         }
 
-        val database = FirebaseDatabase.getInstance()
-        val shopReferences = arrayOf(
-            "Shop 1",
-            "Shop 2",
-            "Shop 3",
-            "Shop 4",
-            "Shop 5",
-            "Shop 6"
-        )
 
-        for (i in shopReferences.indices) {
-            val reference = database.getReference(shopReferences[i]).child("discount")
+        val dealadapter = DealItemAdapter(menuItems, requireContext())
+        binding.popularRecyclerView1.adapter = dealadapter
+        binding.popularRecyclerView1.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-            reference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        val imageList = ArrayList<SlideModel>()
 
-                        for (discountSnapshot in dataSnapshot.children) {
-                            val discountItem = discountSnapshot.getValue(DiscountItem::class.java)
-                            discountItem?.let { item ->
-                                val imageUrl = item.foodImages
-                                val foodName = item.foodNames
-                                val discount = item.discounts
-
-                                imageUrl?.let {
-                                    // Construct title with HTML tags to set text size
-                                    val title = "<font size='17'>$foodName</font> - <font size='17'>$discount Off</font>"
-
-                                    // Construct SlideModel with image URL and title
-                                    val slideModel = SlideModel(imageUrl, HtmlCompat.fromHtml(title, HtmlCompat.FROM_HTML_MODE_COMPACT).toString(), ScaleTypes.FIT)
-                                    imageList.add(slideModel)
-                                }
-                            }
-                        }
-
-                        // Load images into the appropriate image slider based on shop index
-                        when (i) {
-                            0 -> {
-                                binding.imageSlider1.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider1.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Scroll to the top position of cardView5
-                                        scrollToCardView5()
-                                    }
-                                })
-
-                            }
-                            1 ->{
-                                binding.imageSlider2.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider2.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Navigate to the same page as cardView5
-                                        scrollToCardView6()
-                                    }
-                                })
-                            }
-                            2 ->{
-                                binding.imageSlider3.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider3.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Navigate to the same page as cardView5
-                                        scrollToCardView7()
-                                    }
-                                })
-                            }
-                            3 -> {
-                                binding.imageSlider4.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider4.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Navigate to the same page as cardView5
-                                        scrollToCardView8()
-                                    }
-                                })
-                            }
-                            4 -> {
-                                binding.imageSlider5.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider5.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Navigate to the same page as cardView5
-                                        scrollToCardView9()
-                                    }
-                                })
-                            }
-                            5 -> {
-                                binding.imageSlider6.setImageList(imageList, ScaleTypes.FIT)
-                                binding.imageSlider6.setItemClickListener(object : ItemClickListener {
-                                    override fun doubleClick(position: Int) {
-                                        // Double click listener implementation
-                                    }
-
-                                    override fun onItemSelected(position: Int) {
-                                        // Navigate to the same page as cardView5
-                                        scrollToCardView10()
-                                    }
-                                })
-                            }
-                        }
-
-                    } else {
-                        Log.d(TAG, "No data found for ${shopReferences[i]}")
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.e(TAG, "onCancelled", databaseError.toException())
-                }
-            })
+        viewModel.menuItems.observe(viewLifecycleOwner) { items ->
+            dealadapter.updateData(items)
         }
+        viewModel.menuItems.observe(viewLifecycleOwner) { items ->
+            adapter.updateData(items)
+        }
+
+        fetchUserShopNames()
+        fetchUserShopName()
+
+        fetchShopName()
+        // Rest of your code...
+        fetchBuyHistory()
 
         // Retrieve and display address and locality
         retrieveAddressAndLocality()
+        setupRecyclerView()
+        setupRecyclerView1()
 
         binding.dropdown.setOnClickListener {
             showPopupMenu(it)
@@ -288,120 +148,351 @@ class HomeFragment : Fragment() {
         binding.dotsMenu.setOnClickListener {
             showPopupMenus(it)
         }
-        binding.cardView21.setOnClickListener {
-            ToastHelper.showCustomToast(requireContext(), "Show shops")
-        }
+        val adapter = HomeDiscountAdapter(requireContext())
+        binding.discountrecycler.adapter = adapter
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.discountrecycler.layoutManager = layoutManager
+
         this@HomeFragment.database = FirebaseDatabase.getInstance()
-
-
 
         return binding.root
     }
-    private fun markUserShopsAsNormal(userShopNames: String) {
-        // List of all shop names in your application
-        val allShopNames = listOf("Shop 1", "Shop 2", "Shop 3", "Shop 4", "Shop 5", "Shop 6")
 
-        // Split user's shop names by comma and trim whitespace
-        val userShopNameList = userShopNames.split(",").map { it.trim() }
 
-        // Find and mark the user's shop names as normal
-        for (shopName in allShopNames) {
-            val userCardView = getCardViewByShopName(shopName)
-            if (userShopNameList.contains(shopName)) {
-                // Enable and make clickable
-                userCardView.alpha = 1.0f
-                userCardView.setOnClickListener {
-                    navigateToShopFragment(allShopNames.indexOf(shopName) + 5) // Adjust index to match card view IDs
+    private fun fetchBuyHistory() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        val userBuyHistoryRef = FirebaseDatabase.getInstance().reference.child("user").child(userId).child("BuyHistory")
+
+        userBuyHistoryRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val orders = mutableListOf<PreviousItem>()
+                for (childSnapshot in snapshot.children) {
+                    val foodNamesList = childSnapshot.child("foodNames").getValue(object : GenericTypeIndicator<ArrayList<String>>() {})
+                    val foodPricesList = childSnapshot.child("foodPrices").getValue(object : GenericTypeIndicator<ArrayList<String>>() {})
+                    val foodImagesList = childSnapshot.child("foodImage").getValue(object : GenericTypeIndicator<ArrayList<String>>() {})
+                    val foodDescriptionList = childSnapshot.child("fooddescription").getValue(object : GenericTypeIndicator<ArrayList<String>>() {})
+
+                    if (foodNamesList != null && foodPricesList != null && foodImagesList != null &&  foodDescriptionList != null) {
+                        val foodName = if (foodNamesList.isNotEmpty()) foodNamesList[0] else ""
+                        val foodPrice = if (foodPricesList.isNotEmpty()) foodPricesList[0] else ""
+                        val foodImage = if (foodImagesList.isNotEmpty()) foodImagesList[0] else ""
+                        val foodDescription = if (foodDescriptionList.isNotEmpty())  foodDescriptionList[0] else ""
+
+                        val order = PreviousItem(foodName = foodName, foodPrice = foodPrice, foodImage = foodImage, foodDescription = foodDescription)
+                        orders.add(order)
+                    }
                 }
-            } else {
-                // Blur other card views
-                userCardView.alpha = 0.4f
-                userCardView.setOnClickListener{
-                    ToastHelper.showCustomToast(requireContext(), "This shop is not delivery for your locations")
-                    userCardView.isEnabled=false
-                } // Disable click listener
+                adapter1.updateData(orders)
+                updateTextViewVisibility(orders)
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle database error
+            }
+        })
+    }
+
+    private fun updateTextViewVisibility(orders: List<PreviousItem>) {
+        if (orders.isEmpty()) {
+            binding.textVieww9.visibility = View.INVISIBLE
+
+        } else {
+            binding.textVieww9.visibility = View.VISIBLE
         }
     }
 
-    private fun getCardViewByShopName(shopName: String): View {
-        return when (shopName) {
-            "Shop 1" -> binding.cardView5
-            "Shop 2" -> binding.cardView6
-            "Shop 3" -> binding.cardView7
-            "Shop 4" -> binding.cardView8
-            "Shop 5" -> binding.cardView9
-            "Shop 6" -> binding.cardView10
-            else -> throw IllegalArgumentException("Invalid shop name: $shopName")
+
+    private fun setupRecyclerView() {
+        binding.previousrRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter =this@HomeFragment.adapter1
         }
     }
 
-    private fun hasLocationPermission(): Boolean {
-        return (ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED)
-    }
-
-    private fun getCardViewByIndex(index: Int): View {
-        return when (index) {
-            5 -> binding.cardView5
-            6 -> binding.cardView6
-            7 -> binding.cardView7
-            8 -> binding.cardView8
-            9 -> binding.cardView9
-            10 -> binding.cardView10
-            else -> throw IllegalArgumentException("Invalid card view index: $index")
+    private fun setupRecyclerView1() {
+        adapter = NearItemAdapter(menuItems, requireContext())
+        binding.Nearitemrecycler.apply {
+            layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+            adapter = this@HomeFragment.adapter
         }
     }
 
-    private fun calculateDistance(start: LatLng, end: LatLng): Double {
-        val R = 6371 // Radius of the Earth in kilometers
-        val latDistance = Math.toRadians(end.latitude - start.latitude)
-        val lonDistance = Math.toRadians(end.longitude - start.longitude)
-        val a = sin(latDistance / 2) * sin(latDistance / 2) +
-                (cos(Math.toRadians(start.latitude)) * cos(Math.toRadians(end.latitude)) *
-                        sin(lonDistance / 2) * sin(lonDistance / 2))
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return R * c
+    private fun fetchShopName() {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val currentUserId = currentUser.uid
+            val locationPath = "Locations/$currentUserId"
+            Log.d("FirebaseDebug", "Fetching data from path: $locationPath")
+            databaseRef.child(locationPath)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val shopNames = mutableListOf<String>()
+                        Log.d("FirebaseDebug", "Data snapshot: ${dataSnapshot.value}")
+                        val shopName = dataSnapshot.child("shopname").getValue(String::class.java)
+                        Log.d("FirebaseDebug", "Found shop name: $shopName")
+                        if (shopName != null) {
+                            // Split the shop names by comma and trim any extra spaces
+                            val individualShopNames = shopName.split(",").map { it.trim() }
+                            shopNames.addAll(individualShopNames)
+                        }
+                        exploreShopAdapter.setShopList(shopNames)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.e("FirebaseError", "Error fetching data", databaseError.toException())
+                    }
+                })
+        } else {
+            Log.e("FirebaseError", "No authenticated user found.")
+        }
     }
-    private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ),
-            PERMISSIONS_REQUEST_LOCATION
-        )
+
+
+    override fun onItemClick(shopName: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val currentUserId = currentUser?.uid
+
+        if (currentUserId != null) {
+            val databaseRef =
+                FirebaseDatabase.getInstance().getReference("Exploreshop/$currentUserId/ShopName")
+            databaseRef.setValue(shopName)
+                .addOnSuccessListener {
+                    Log.d("FirebaseDebug", "Shop name $shopName stored successfully")
+                    findNavController().navigate(R.id.action_homeFragment_to_shoponefragment)
+                    // Navigate to next fragment or perform any other action if needed
+                }
+                .addOnFailureListener { e ->
+                    Log.e("FirebaseError", "Error storing shop name: $e")
+                }
+        } else {
+            Log.e("FirebaseError", "Current user ID is null")
+        }
     }
-    private fun getUserLocation(callback: (LatLng?) -> Unit) {
-        // Check for location permission
-        if (hasLocationPermission()) {
-            // Permission granted, get user's current location
-            try {
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location ->
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            val userLocation = LatLng(location.latitude, location.longitude)
-                            callback.invoke(userLocation)
-                        } else {
-                            callback.invoke(null) // Location could not be retrieved
+
+    override fun onResume() {
+        super.onResume()
+        fetchOrders()
+        fetchShopName()
+
+    }
+
+    private fun fetchOrders() {
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.fetchOrders()
+
+        }
+    }
+
+
+    private fun fetchUserShopNames() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            databaseReference.child(it).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val shopNames = snapshot.child("shopname").getValue(String::class.java)
+                        shopNames?.let { names ->
+                            val shopNameList = names.split(",") // Split shop names by comma
+                            shopNameList.forEach { shopName ->
+                                fetchMenuItems(shopName.trim())
+                                // Trim whitespace from shop name
+                            }
                         }
                     }
-            } catch (e: SecurityException) {
-                // Handle SecurityException
-                callback.invoke(null)
-            }
-        } else {
-            // Location permission not granted
-            callback.invoke(null)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
         }
     }
+
+    private fun fetchUserShopName() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let {
+            databaseReference.child(it).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val shopNames = snapshot.child("shopname").getValue(String::class.java)
+                        shopNames?.let { names ->
+                            val shopNameList = names.split(",") // Split shop names by comma
+                            shopNameList.forEach { shopName ->
+                                fetchMenuItem(shopName.trim())
+                                // Trim whitespace from shop name
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+        }
+    }
+    private fun fetchMenuItems(shopName: String) {
+        val userId = auth.currentUser?.uid ?: return
+
+        // Fetch user language first
+        database.getReference("user").child(userId).child("language")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(languageSnapshot: DataSnapshot) {
+                    val userLanguage = languageSnapshot.getValue(String::class.java)?.toLowerCase() ?: "english"
+
+                    val menuReferences = listOf("menu", "menu1", "menu2")
+                    menuReferences.forEach { menu ->
+                        database.getReference(shopName).child(menu)
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (snapshot.exists()) {
+                                        for (itemSnapshot in snapshot.children) {
+                                            val menuItem = itemSnapshot.getValue(MenuItem::class.java)
+                                            menuItem?.let {
+                                                // Select the appropriate foodNames based on the user's language
+                                                val foodNamesList = it.foodName ?: arrayListOf()
+                                                val englishName = foodNamesList.getOrNull(0) ?: ""
+                                                val languageSpecificName = when (userLanguage) {
+                                                    "tamil" -> foodNamesList.getOrNull(1) ?: ""
+                                                    "malayalam" -> foodNamesList.getOrNull(2) ?: ""
+                                                    "telugu" -> foodNamesList.getOrNull(3) ?: ""
+                                                    else -> englishName // Default to English
+                                                }
+
+                                                // Create a combined name with both English and language-specific names
+                                                val combinedName = "$englishName / $languageSpecificName"
+
+                                                // Add the combined name to the foodName list
+                                                it.foodName = arrayListOf(combinedName)
+
+                                                // Add the menuItem to the list
+                                                menuItems.add(it)
+
+                                            }
+                                        }
+                                        if (!::adapter.isInitialized) {
+                                            adapter = NearItemAdapter(menuItems,requireContext())
+                                            binding.Nearitemrecycler.adapter = adapter
+                                        } else {
+                                            adapter.notifyDataSetChanged()
+                                        }
+                                        adapter.updateMenuItems(menuItems)
+                                        loadFavoriteItems()
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    // Handle error
+                                }
+                            })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+    }
+
+    private fun fetchMenuItem(shopName: String) {
+        val userId = auth.currentUser?.uid ?: return
+        val menuItems = mutableListOf<MenuItem>()
+        database.getReference("user").child(userId).child("language")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(languageSnapshot: DataSnapshot) {
+                    val userLanguage = languageSnapshot.getValue(String::class.java)?.toLowerCase() ?: "english"
+                    val menuReferences = listOf("menu")
+                    menuReferences.forEach { menu ->
+                        database.getReference(shopName).child(menu)
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (snapshot.exists()) {
+                                        for (itemSnapshot in snapshot.children) {
+                                            val menuItem = itemSnapshot.getValue(MenuItem::class.java)
+                                            menuItem?.let {
+                                                val foodNamesList = it.foodName ?: arrayListOf()
+                                                val englishName = foodNamesList.getOrNull(0) ?: ""
+                                                val languageSpecificName = when (userLanguage) {
+                                                    "tamil" -> foodNamesList.getOrNull(1) ?: ""
+                                                    "malayalam" -> foodNamesList.getOrNull(2) ?: ""
+                                                    "telugu" -> foodNamesList.getOrNull(3) ?: ""
+                                                    else -> englishName
+                                                }
+                                                val combinedName = "$englishName / $languageSpecificName"
+                                                it.foodName = arrayListOf(combinedName)
+                                                menuItems.add(it)
+                                            }
+                                        }
+                                        viewModel.setMenuItems(menuItems)
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    // Handle error
+                                }
+                            })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+    }
+    private fun loadFavoriteItems() {
+        currentUserID?.let { userId ->
+            val databaseRef = FirebaseDatabase.getInstance().getReference("Favourite").child(userId)
+
+            databaseRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val favoriteItems = mutableMapOf<String, Boolean>()
+                        val itemsToRemove = mutableListOf<DataSnapshot>()
+
+                        snapshot.children.forEach { itemSnapshot ->
+                            val favoriteItem = itemSnapshot.getValue(MenuItem::class.java)
+                            favoriteItem?.let {
+                                it.foodName?.forEach { foodName ->
+                                    if (!it.favorite) {
+                                        itemsToRemove.add(itemSnapshot)
+                                    } else {
+                                        favoriteItems[foodName] = it.favorite
+                                    }
+                                }
+                            }
+                        }
+
+                        // Remove items from Firebase if they are not favorite
+                        itemsToRemove.forEach { itemSnapshot ->
+                            itemSnapshot.ref.removeValue()
+                        }
+
+                        updateMenuItemsWithFavorites(favoriteItems)
+                    } else {
+                        // Handle the case when there are no favorites
+                        updateMenuItemsWithFavorites(emptyMap())
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                }
+            })
+        }
+    }
+
+    private fun updateMenuItemsWithFavorites(favoriteItems: Map<String, Boolean>) {
+        menuItems.forEach { menuItem ->
+            menuItem.foodName?.forEach { foodName ->
+                menuItem.favorite = favoriteItems[foodName] ?: false
+                // Assuming only one foodName should be true, break after setting favorite
+                if (menuItem.favorite) return@forEach
+            }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+
     private fun observeViewModel() {
         viewModel.address.observe(viewLifecycleOwner) { address ->
             binding.tvAddress.text = address
@@ -415,19 +506,6 @@ class HomeFragment : Fragment() {
         }
         viewModel.longitude.observe(viewLifecycleOwner) { longitude ->
             binding.tvLogitude.text = longitude.toString()
-        }
-    }
-
-
-    private fun navigateToShopFragment(index: Int) {
-        when (index) {
-            5 -> findNavController().navigate(R.id.action_homeFragment_to_shoponefragment)
-            6 -> findNavController().navigate(R.id.action_homeFragment_to_shoptwofragment)
-            7 -> findNavController().navigate(R.id.action_homeFragment_to_shopthreefragment)
-            8 -> findNavController().navigate(R.id.action_homeFragment_to_shopfourfragment)
-            9-> findNavController().navigate(R.id.action_homeFragment_to_shopfivefragment)
-            10-> findNavController().navigate(R.id.action_homeFragment_to_shopsixfragment)
-            else -> throw IllegalArgumentException("Invalid card view index")
         }
     }
 
@@ -533,90 +611,65 @@ class HomeFragment : Fragment() {
         popupMenu.show()
     }
 
-
-
-
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupImageSlider()
-        startAnimation()
-    }
 
-    private fun scrollToCardView5() {
-        scrollToCardView(binding.cardView5)
-    }
-    private fun scrollToCardView6() {
-        scrollToCardView(binding.cardView6)
-    }
-    private fun scrollToCardView7() {
-        scrollToCardView(binding.cardView7)
-    }
-    private fun scrollToCardView8() {
-        scrollToCardView(binding.cardView8)
-    }
-    private fun scrollToCardView9() {
-        scrollToCardView(binding.cardView9)
-    }
-    private fun scrollToCardView10() {
-        scrollToCardView(binding.cardView10)
-    }
-
-
-
-    private fun scrollToCardView(cardView: View) {
-        // Get the top position of the cardView relative to the NestedScrollView
-        val scrollPosition = cardView.top
-        // Scroll to the position of the cardView
-        binding.scrollView.post {
-            binding.scrollView.smoothScrollTo(0, scrollPosition)
+        binding.imageView1.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_FreshFishFragment)
         }
+
+        binding.imageView2.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_DryFishFragment)
+        }
+
+        binding.imageView3.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_PicklesFragment)
+        }
+        binding.searchView1.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_productSearchFragment)
+        }
+
+        disableSearchViewInput(binding.searchView1)
     }
-    private fun startAnimation() {
-        // Randomly select an image from the array
-        val randomImageIndex = Random.nextInt(imageResources.size)
-        val randomImage = imageResources[randomImageIndex]
 
-        // Set the randomly selected image to the ImageView
-        binding.discounts.setImageResource(randomImage)
-
-        // Load the animation
-        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.discount)
-
-        // Set animation listener to change image after exit animation completes
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
-            override fun onAnimationRepeat(animation: Animation?) {}
-            override fun onAnimationEnd(animation: Animation?) {
-                // Randomly select a new image for the next animation
-                val newRandomImageIndex = Random.nextInt(imageResources.size)
-                val newRandomImage = imageResources[newRandomImageIndex]
-                binding.discounts.setImageResource(newRandomImage)
-
-                // Start the animation again
-                binding.discounts.startAnimation(animation)
+    private fun disableSearchViewInput(searchView: androidx.appcompat.widget.SearchView) {
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                searchView.clearFocus()
+                findNavController().navigate(R.id.action_homeFragment_to_productSearchFragment)
             }
-        })
-
-        // Start the animation
-        binding.discounts.startAnimation(animation)
+        }
 
     }
 
     private fun setupImageSlider() {
         val imageList = ArrayList<SlideModel>()
-        // Add your image resources here
-        imageList.add(SlideModel(R.drawable.ban, scaleType = ScaleTypes.FIT))
-        imageList.add(SlideModel(R.drawable.banner1, scaleType = ScaleTypes.FIT))
-        imageList.add(SlideModel(R.drawable.banner2, scaleType = ScaleTypes.FIT))
-        imageList.add(SlideModel(R.drawable.banner3, scaleType = ScaleTypes.FIT))
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child("Banners")
+
+        // List all images under "Banners" path
+        storageRef.listAll()
+            .addOnSuccessListener { listResult ->
+                listResult.items.forEach { item ->
+                    // Get download URL for each image
+                    item.downloadUrl.addOnSuccessListener { uri ->
+                        // Add each image to the imageList
+                        imageList.add(SlideModel(uri.toString(), scaleType = ScaleTypes.FIT))
+                        // Set imageList to the image slider
+                        binding.imageSlider.setImageList(imageList)
+                    }.addOnFailureListener { exception ->
+                        // Handle any errors during getting download URL
+
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors during listing images
+
+            }
 
         val imageSlide = binding.imageSlider
-        imageSlide.setImageList(imageList)
-
         imageSlide.setItemClickListener(object : ItemClickListener {
             override fun doubleClick(position: Int) {
                 // Double click listener implementation
@@ -624,15 +677,7 @@ class HomeFragment : Fragment() {
 
             override fun onItemSelected(position: Int) {
                 // Check if the selected image is "ban"
-
             }
-
-
         })
     }
-    companion object {
-        private const val PERMISSIONS_REQUEST_LOCATION = 100
-    }
 }
-
-

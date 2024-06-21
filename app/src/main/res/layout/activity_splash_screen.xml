@@ -14,7 +14,7 @@
         android:text="Fishfy"
         android:fontFamily="@font/noo"
         android:textColor="@color/white"
-        android:textSize="80sp"
+        android:textSize="70sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintBottom_toBottomOf="parent"
