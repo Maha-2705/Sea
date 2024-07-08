@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/one"
+        android:title="10 Am - 12 Pm" />
+
+    <item
+        android:id="@+id/two"
+        android:title="2 Pm - 5 Pm" />
+
+    <item
+        android:id="@+id/three"
+        android:title="7 Pm - 10 Pm" />
+</menu>

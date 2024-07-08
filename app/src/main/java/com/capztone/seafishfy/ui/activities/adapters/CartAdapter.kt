@@ -1,19 +1,21 @@
 package com.capztone.seafishfy.ui.activities.adapters
 
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.capztone.seafishfy.databinding.CartItemBinding
 import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
+import com.capztone.seafishfy.R
 
 class CartAdapter(
     private val context: Context,
@@ -36,6 +38,7 @@ class CartAdapter(
 
         itemQuantities = IntArray(cartItemNumber)
         cartItemsReference = database.reference.child("user").child(userId).child("cartItems")
+
     }
 
     companion object {
@@ -66,6 +69,19 @@ class CartAdapter(
 
         init {
             binding.apply {
+                plusImageButton.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        increaseQuantity(position)
+                    }
+                }
+
+                minusImageButton.setOnClickListener {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        decreaseQuantity(position)
+                    }
+                }
 
                 deteleImageButton.setOnClickListener {
                     val itemPosition = adapterPosition
@@ -83,22 +99,173 @@ class CartAdapter(
                 val uriString = cartImages[position]
                 val uri = Uri.parse(uriString)
                 Glide.with(context).load(uri).into(cartImageView)
-                quantityTextView.text = cartItemQuantitys[position].toString()
 
-
-                val itemName = cartItems[position]
-                val firebasePaths = listOf("Shop 1", "Shop 2", "Shop 3", "Shop 4","Shop 5","Shop 6")
-                fetchItemPath(itemName, firebasePaths) { path ->
-                    // Update the TextView with the fetched path
-                   "Item not found in any path"
+                // Retrieve quantity from Firebase asynchronously
+                getQuantityFromFirebase(position) { quantity ->
+                    binding.actualAuantity.text = quantity.toString()
                 }
             }
         }
 
+        private fun getQuantityFromFirebase(position: Int, onComplete: (Int) -> Unit) {
+            getUniqueKeyAtPosition(position) { uniqueKey ->
+                cartItemsReference.child(uniqueKey).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val quantity = snapshot.child("foodQuantity").getValue(Int::class.java) ?: 1
+                        onComplete(quantity)
+                        // Call notifyItemChanged(position) after updating the quantity
+                        notifyItemChanged(position)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Handle error
+                    }
+                })
+            }
+        }
+
+        private fun increaseQuantity(position: Int) {
+            if (position < 0 || position >= cartItemQuantitys.size) return
+
+            // Fetch the current quantity from Firebase
+            getQuantityFromFirebase(position) { currentQuantity ->
+                // Increment the current quantity by 1
+                val updatedQuantity = currentQuantity + 1
+
+                // Update the quantity in the local list and UI
+                cartItemQuantitys[position] = updatedQuantity
+                binding.quantityTextView.text = updatedQuantity.toString()
+
+                // Update the quantity in Firebase
+                updateQuantityInFirebase(position, updatedQuantity)
+                updateHomeCartQuantity(cartItems[position], updatedQuantity)
+                // Notify the adapter of the change
+                notifyItemChanged(position)
+            }
+        }
+
+        private fun decreaseQuantity(position: Int) {
+            if (position < 0 || position >= cartItemQuantitys.size) return
+
+            // Fetch the current quantity from Firebase
+            getQuantityFromFirebase(position) { currentQuantity ->
+                // Ensure quantity does not go below 1
+                if (currentQuantity > 1) {
+                    // Decrement the current quantity by 1
+                    val updatedQuantity = currentQuantity - 1
+
+                    // Update the quantity in the local list and UI
+                    cartItemQuantitys[position] = updatedQuantity
+                    binding.quantityTextView.text = updatedQuantity.toString()
+
+                    // Update the quantity in Firebase
+                    updateQuantityInFirebase(position, updatedQuantity)
+                    updateHomeCartQuantity(cartItems[position], updatedQuantity)
+
+                    // Notify the adapter of the change
+                    notifyItemChanged(position)
+                } else {
+                    ToastHelper.showCustomToast(context, "Quantity cannot be less than 1")
+                }
+            }
+        }
+
+        private fun updateQuantityInFirebase(position: Int, quantity: Int) {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+
+            currentUser?.let { user ->
+                getUniqueKeyAtPosition(position) { uniqueKey ->
+                    // Get the reference to the specific item push key under "cartItems"
+                    val itemReference = cartItemsReference.child(uniqueKey)
+                    // Update the quantity for that specific item
+                    itemReference.child("foodQuantity").setValue(quantity)
+                }
+            }
+        }
+
+        private fun updateHomeCartQuantity(foodName: String, quantity: Int) {
+            val userId = auth.currentUser?.uid ?: return
+            val homeCartRef =
+                FirebaseDatabase.getInstance().reference.child("Home").child(userId).child("cartItems")
+
+            homeCartRef.orderByChild("foodName").equalTo(foodName)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (cartSnapshot in dataSnapshot.children) {
+                            cartSnapshot.ref.child("foodQuantity").setValue(quantity)
+                                .addOnSuccessListener {
+                                    // Handle success (optional)
+                                }.addOnFailureListener { e ->
+                                    Log.e(ContentValues.TAG, "Failed to update foodQuantity: ${e.message}")
+                                    // Handle failure (optional)
+                                }
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.e(ContentValues.TAG, "Database error: ${databaseError.message}")
+                        // Handle onCancelled (optional)
+                    }
+                })
+        }
 
         private fun deleteItem(position: Int) {
+            // Check if it's the last item in the cart
+            val isLastItem = cartItems.size == 1
+
+            if (isLastItem) {
+                // Show confirmation dialog
+                showDeleteConfirmationDialog(position)
+            } else {
+                // Directly delete the item
+                performDelete(position)
+            }
+        }
+
+        private fun showDeleteConfirmationDialog(position: Int) {
+            // Inflate the custom layout for the dialog
+            val dialogView = LayoutInflater.from(context).inflate(R.layout.custom_cart_delete_dialog, null)
+
+            // Initialize views from the custom dialog layout
+            val dialogTitle = dialogView.findViewById<TextView>(R.id.dialog_title)
+            val dialogMessage = dialogView.findViewById<TextView>(R.id.dialog_message)
+            val buttonYes = dialogView.findViewById<AppCompatButton>(R.id.dialog_button_yes)
+            val buttonNo = dialogView.findViewById<AppCompatButton>(R.id.dialog_button_no)
+
+            // Customize dialog title and message (if needed)
+            dialogTitle.text = "Delete Confirmation"
+            dialogMessage.text = "Are you sure you want to remove this item?"
+
+            // Create AlertDialog object with no default AlertDialog components
+            val alertDialog = AlertDialog.Builder(context).create()
+
+            // Set the custom layout to the AlertDialog
+            alertDialog.setView(dialogView)
+
+            // Set background to transparent (optional)
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            // Set click listeners for buttons
+            buttonYes.setOnClickListener {
+                performDelete(position)
+                alertDialog.dismiss() // Dismiss dialog after performing delete action
+            }
+
+            buttonNo.setOnClickListener {
+                alertDialog.dismiss() // Dismiss dialog if "No" is clicked
+            }
+
+            // Show the AlertDialog
+            alertDialog.show()
+        }
+
+        private fun performDelete(position: Int) {
             getUniqueKeyAtPosition(position) { uniqueKey ->
+                val foodNameToDelete = cartItems[position]
+
+                // Delete from user cartItems path
                 cartItemsReference.child(uniqueKey).removeValue().addOnSuccessListener {
+                    // Remove item from the local lists
                     cartItems.removeAt(position)
                     cartItemPrices.removeAt(position)
                     cartItemDescriptions.removeAt(position)
@@ -106,12 +273,38 @@ class CartAdapter(
                     cartItemQuantitys.removeAt(position)
                     cartItemIngredients.removeAt(position)
 
+                    // Notify the adapter
                     notifyItemRemoved(position)
                     ToastHelper.showCustomToast(context, "Item Deleted")
+
+                    // Also remove from Home --> cartItems path
+                    deleteFromHomeCartItems(foodNameToDelete)
                 }.addOnFailureListener {
                     ToastHelper.showCustomToast(context, "Failed to Delete Item")
                 }
             }
+        }
+
+        private fun deleteFromHomeCartItems(foodName: String) {
+            val userId = auth.currentUser?.uid ?: return
+            val homeCartRef = FirebaseDatabase.getInstance().reference.child("Home").child(userId).child("cartItems")
+
+            homeCartRef.orderByChild("foodName").equalTo(foodName)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (cartSnapshot in dataSnapshot.children) {
+                            cartSnapshot.ref.removeValue().addOnSuccessListener {
+                                Log.d(ContentValues.TAG, "Deleted item from Home cartItems")
+                            }.addOnFailureListener { e ->
+                                Log.e(ContentValues.TAG, "Failed to delete item from Home cartItems: ${e.message}")
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.e(ContentValues.TAG, "Database error: ${databaseError.message}")
+                    }
+                })
         }
 
         private fun getUniqueKeyAtPosition(positionRetrieve: Int, onComplete: (String) -> Unit) {

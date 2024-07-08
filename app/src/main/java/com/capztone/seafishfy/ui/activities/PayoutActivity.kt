@@ -13,6 +13,7 @@ import com.google.firebase.database.*
 import android.view.View
 import androidx.core.app.ActivityCompat
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.location.Location
 import android.content.pm.PackageManager
@@ -20,24 +21,36 @@ import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
 import android.util.Log
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.capztone.seafishfy.ui.activities.fragments.PayoutBottomSheetFragment
+
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.core.content.ContextCompat
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.widget.EditText
+import androidx.appcompat.widget.AppCompatButton
+import com.capztone.seafishfy.ui.activities.fragments.AddressFragment
+
 
 class PayoutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPayoutBinding
-    private lateinit var name: String
+
     private lateinit var address: String
-    private lateinit var phoneNumber: String
+
     private lateinit var totalAmount: String
     private lateinit var paymentMethod: String
+    private lateinit var gpayRadioButton: RadioButton
+    private lateinit var phonePeRadioButton: RadioButton
+    private lateinit var paytmRadioButton: RadioButton
 
 
     private lateinit var auth: FirebaseAuth
@@ -52,10 +65,9 @@ class PayoutActivity : AppCompatActivity() {
     private lateinit var foodItemIngredient: ArrayList<String>
     private lateinit var foodItemImage: ArrayList<String>
     private lateinit var foodItemQuantities: ArrayList<Int>
-
+    private var selectedSlot: String? = null
 
     private var status: String? = null
-
 
     private val PHONEPE_REQUEST_CODE = 101
     private val PAYTM_REQUEST_CODE = 102
@@ -63,20 +75,32 @@ class PayoutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val bottomSheetFragment = PayoutBottomSheetFragment()
-        val bundle = Bundle()
-        bundle.putInt("totalAmount", adjustedTotalAmount)
-        bottomSheetFragment.arguments = bundle
-        bottomSheetFragment.show(supportFragmentManager, "test")
 
         binding = ActivityPayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // Initialize Firebase and User Details
+        // Initialize radio buttons
+        gpayRadioButton = binding.gpay
+        phonePeRadioButton = binding.phonepe
+        paytmRadioButton = binding.paytm
+        setupRadioButtons()
         auth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setUserData()
-        binding.drop.setOnClickListener { showPopupMenu(it) }
+
+        binding.changeAddress.setOnClickListener {
+            val addressFragment = AddressFragment()
+            addressFragment.show(supportFragmentManager, addressFragment.tag)
+        }
+        binding.address.setOnClickListener {
+            val addressFragment = AddressFragment()
+            addressFragment.show(supportFragmentManager, addressFragment.tag)
+        }
+
+        binding.slotdrop.setOnClickListener { showPopupMenu1() }
+        binding.Slot.setOnClickListener { showPopupMenu1() }
+        binding.time.setOnClickListener { showPopupMenu1() }
 
         // Get user details form Firebase
         foodItemName = intent.getStringArrayListExtra("foodItemName") as ArrayList<String>
@@ -90,47 +114,92 @@ class PayoutActivity : AppCompatActivity() {
 
         totalAmount = calculateTotalAmount().toString() + "₹"
         binding.payoutTotalAmount.isEnabled = false
+        binding.payoutTotalAmount.setText(totalAmount)
+
         var adjustedTotalAmount = totalAmount.dropLast(1).toInt()
-
         retrieveFinalTotalFromFirebase()
-
-        binding.payoutTotalAmount.text = "$totalAmount"
+        setDefaultAddress()
 
         binding.placeMyOrderButton.setOnClickListener {
             // get data from Edittext
-            name = binding.payoutName.text.toString().trim()
-            address = binding.payoutAddress.text.toString().trim()
-            phoneNumber = binding.payoutPhoneNumber.text.toString().trim()
 
-            if (name.isBlank() && address.isBlank() && phoneNumber.isBlank()) {
+            address = binding.payoutAddress.text.toString().trim()
+
+
+            if ( address.isBlank() ) {
                 Toast.makeText(this, "Please Enter all the Details", Toast.LENGTH_SHORT).show()
-            } else if (!isValidPhoneNumber(phoneNumber)) {
-                Toast.makeText(this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            else if (selectedSlot.isNullOrBlank()) {
+                Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show()
+            }
+            else {
                 placeTheOrder()
 
             }
-
-//
-        }
-        binding.payoutBackButton.setOnClickListener {
-            finish()
-        }
-        binding.viewamount.setOnClickListener {
-            val bottomSheetFragment = PayoutBottomSheetFragment()
-            val bundle = Bundle()
-            bundle.putInt("totalAmount", adjustedTotalAmount)
-            bottomSheetFragment.arguments = bundle
-            bottomSheetFragment.show(supportFragmentManager, "test")
         }
     }
+    private fun setDefaultAddress() {
+        val user = auth.currentUser
+        if (user != null) {
+            val userId = user.uid
+            val payoutAddressReference = databaseReference.child("PayoutAddress").child(userId).child("address")
+            val userReference = databaseReference.child("Locations").child(userId)
+
+            // Check "Locations" path for HOME, WORK, or OTHER addresses
+            userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(locationSnapshot: DataSnapshot) {
+                    var addressFound = false
+                    val addressTypes = listOf("HOME", "WORK", "OTHER")
+
+                    for (addressType in addressTypes) {
+                        if (locationSnapshot.child(addressType).child("address").exists()) {
+                            val savedAddress = locationSnapshot.child(addressType).child("address").getValue(String::class.java)
+                            savedAddress?.let {
+                                binding.payoutAddress.setText(it)
+                                addressFound = true
+
+                                // Update the PayoutAddress in Firebase (optional)
+                                payoutAddressReference.setValue(it)
+                                return // Exit loop once address is found
+                            }
+                        }
+                    }
+
+                    // If no address is found in HOME, WORK, or OTHER, use PayoutAddress
+                    if (!addressFound) {
+                        payoutAddressReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(payoutSnapshot: DataSnapshot) {
+                                if (payoutSnapshot.exists()) {
+                                    val payoutAddress = payoutSnapshot.getValue(String::class.java)
+                                    payoutAddress?.let {
+                                        binding.payoutAddress.setText(it)
+                                    }
+                                } else {
+                                    Log.e("PayoutActivity", "No address found in HOME, WORK, or OTHER, and PayoutAddress is also not set")
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("PayoutActivity", "Error fetching PayoutAddress", error.toException())
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("PayoutActivity", "Error fetching saved address", error.toException())
+                }
+            })
+        }
+    }
+
     private fun retrieveFinalTotalFromFirebase() {
         val user = auth.currentUser
         if (user != null) {
             val userId = user.uid
             val userReference = databaseReference.child("Total Amount").child(userId)
 
-            userReference.child("finalTotal").addValueEventListener(object : ValueEventListener {
+            userReference.child("finalTotal").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val finalTotal = snapshot.getValue(Double::class.java)
                     finalTotal?.let {
@@ -138,6 +207,7 @@ class PayoutActivity : AppCompatActivity() {
                         val finalTotal = it.toInt()
                         // Set the rounded total to the TextView
                         binding.amountTotal.text = "$finalTotal ₹"
+                        setDefaultAddress() // Call setDefaultAddress after setting total amount
                     }
                 }
 
@@ -149,184 +219,148 @@ class PayoutActivity : AppCompatActivity() {
     }
 
 
-    private fun showPopupMenu(view: View) {
-        val popupMenu = PopupMenu(this, view)
-        popupMenu.menuInflater.inflate(R.menu.payoutaddress, popupMenu.menu)
+    private fun showPopupMenu1() {
+        // Inflate the custom dialog layout
+        val dialogView = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
 
-        popupMenu.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_saved_location -> {
-                    // Handle saved location selection
-                    getLocation()
-                    true
-                }
+        // Build the custom dialog
+        val dialogBuilder = AlertDialog.Builder(this)
+            .setView(dialogView)
 
-                R.id.menu_current_location -> {
-                    // Handle current location selection
-                    getCurrentLocationAndDisplayAddress()
-                    true
-                }
+        val alertDialog = dialogBuilder.create()
 
-                else -> false
+        // Initialize selected option
+        var selectedOption = -1
+
+        // Find views within custom dialog layout
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radio_group)
+        val btnOk = dialogView.findViewById<AppCompatButton>(R.id.btn_ok)
+        val btnCancel = dialogView.findViewById<AppCompatButton>(R.id.btn_cancel)
+
+        // Set up OK button click listener
+        btnOk.setOnClickListener {
+            // Get selected radio button id
+            selectedOption = radioGroup.checkedRadioButtonId
+
+            if (selectedOption != -1) {
+                // Get selected radio button text
+                val radioButton = dialogView.findViewById<RadioButton>(selectedOption)
+                val selectedSlotText = radioButton?.text.toString()
+
+                // Update UI with selected slot
+                binding.Slot.text = selectedSlotText
+                selectedSlot = selectedSlotText
+
+                alertDialog.dismiss()
+            } else {
+                // Show a message to the user or handle the case where no option is selected
+                Toast.makeText(this, "Please select a time slot", Toast.LENGTH_SHORT).show()
             }
         }
 
-        popupMenu.show()
-    }
-
-    private fun getCurrentLocationAndDisplayAddress() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request location permissions if not granted
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-            return
+        // Set up Cancel button click listener
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
         }
 
-        // Get last known location
-        mFusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                // Got last known location. In some rare situations this can be null.
-                location?.let {
-                    // Reverse geocode the coordinates to get the address
-                    val geocoder = Geocoder(this, Locale.getDefault())
+        // Show the dialog
+        alertDialog.show()
 
-
-                    try {
-                        val addresses: List<Address>? =
-                            geocoder.getFromLocation(it.latitude, it.longitude, 1)
-                        if (addresses != null && addresses.isNotEmpty()) {
-                            val address = addresses[0].getAddressLine(0)
-                            // Update your text view with the obtained address
-                            updateTextViewWithAddress(address)
-                        } else {
-                            // Handle case when no address is found
-                            showToast("No address found for current location")
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        showToast("Error getting address for current location")
-                    }
-                }
-            }
+        // Set the background to be transparent
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
-
-
-
-
-
-
-
-    private fun updateTextViewWithAddress(address: String) {
-        binding.payoutAddress.text = address
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION
-            )
-            return
-        }
-
-        mFusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    // Convert the location to address
-                    getAddressFromLocation(location)
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error getting location", e)
-            }
-    }
-
-    private fun getAddressFromLocation(location: Location) {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        var addresses: List<Address>? = null
-        try {
-            addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        } catch (ioException: IOException) {
-            Log.e(TAG, "Error getting address from location", ioException)
-        }
-
-        if (addresses != null && addresses.isNotEmpty()) {
-            val address = addresses[0].getAddressLine(0)
-            displayAddress(address)
-        } else {
-            displayAddress("Address not found")
-        }
-    }
-
-    private fun displayAddress(address: String) {
-        binding.payoutAddress.text = address
-    }
 
     private fun placeTheOrder() {
-
-        showPaymentOptions()
+        handlePlaceMyOrderClick()
     }
 
-    private fun showPaymentOptions() {
-        val paymentMethods =
-            arrayOf("Google Pay", "PhonePe", "Paytm") // Add more payment methods if needed
-        val builder =
-            AlertDialog.Builder(this, R.style.GreenTitleAlertDialog) // Apply custom style here
-        builder.setTitle("Choose Payment Method")
-        builder.setItems(paymentMethods) { dialog, which ->
-            val selectedMethod = paymentMethods[which]
-
-
-            when (selectedMethod) {
-                "Google Pay" -> {
-                    // Handle Google Pay payment
-                    redirectToGooglePay()
-                }
-
-                "PhonePe" -> {
-                    redirectToPhonepe()
-                    // Handle PhonePe payment
-
-                }
-
-                "Paytm" -> {
-                    redirectToPaytm()
-                    // Handle PhonePe payment
-                }
-            }
-            dialog.dismiss()
+    private fun setupRadioButtons() {
+        gpayRadioButton.setOnClickListener {
+            selectRadioButton(gpayRadioButton)
+            deselectRadioButton(phonePeRadioButton)
+            deselectRadioButton(paytmRadioButton)
         }
-        val dialog = builder.create()
-        dialog.show()
+
+        phonePeRadioButton.setOnClickListener {
+            deselectRadioButton(gpayRadioButton)
+            selectRadioButton(phonePeRadioButton)
+            deselectRadioButton(paytmRadioButton)
+        }
+
+        paytmRadioButton.setOnClickListener {
+            deselectRadioButton(gpayRadioButton)
+            deselectRadioButton(phonePeRadioButton)
+            selectRadioButton(paytmRadioButton)
+        }
     }
+
+    // Helper function to select a radio button and change its color
+    private fun selectRadioButton(radioButton: RadioButton) {
+        radioButton.isChecked = true
+        radioButton.setTextColor(ContextCompat.getColor(this, R.color.navy))
+    }
+
+    private fun deselectRadioButton(radioButton: RadioButton) {
+        radioButton.isChecked = false
+        radioButton.setTextColor(ContextCompat.getColor(this, R.color.black))
+    }
+
+
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+
+        val adjustedTotalAmount = binding.amountTotal.text.toString().replace("₹", "").trim().toInt()
+        binding.amountTotal.setText("₹$adjustedTotalAmount")
+
+
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data != null) {
+            status = data.getStringExtra("Status")!!.lowercase(Locale.getDefault())
+        }
+        if (requestCode == GOOGLE_PAY_REQUEST_CODE || requestCode == PAYTM_REQUEST_CODE || requestCode == PHONEPE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && status == "success") {
+                Toast.makeText(
+                    this@PayoutActivity,
+                    "Transaction Successful",
+                    Toast.LENGTH_SHORT
+                ).show()
+                navigateToCongratsFragment(adjustedTotalAmount)
+            } else {
+                Toast.makeText(
+                    this@PayoutActivity,
+                    "Transaction Failed",
+                    Toast.LENGTH_SHORT
+                ).show()
+                navigateToCongratsFragment(adjustedTotalAmount)
+
+            }
+        }
+    }
+
+    private fun handlePlaceMyOrderClick() {
+        val isGPaySelected = binding.gpay.isChecked
+        val isPhonePeSelected = binding.phonepe.isChecked
+        val isPaytmSelected = binding.paytm.isChecked
+
+        when {
+            isGPaySelected ->  redirectToGooglePay()
+            isPhonePeSelected -> redirectToPhonepe()
+            isPaytmSelected ->  redirectToPaytm()
+            else -> Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun redirectToPhonepe() {
         paymentMethod = "Phonepe"
 
         val adjustedTotalAmount = binding.amountTotal.text.toString().replace("₹", "").trim().toInt()
+        binding.amountTotal.setText("₹$adjustedTotalAmount")
 
 
-        binding.payoutTotalAmount.text = adjustedTotalAmount.toString()
+
         val uri = Uri.Builder()
             .scheme("upi")
             .authority("pay")
@@ -347,8 +381,8 @@ class PayoutActivity : AppCompatActivity() {
         paymentMethod = "Paytm"
 
         val adjustedTotalAmount = binding.amountTotal.text.toString().replace("₹", "").trim().toInt()
+        binding.amountTotal.setText("₹$adjustedTotalAmount")
 
-        binding.payoutTotalAmount.text = adjustedTotalAmount.toString()
         val uri = Uri.Builder()
             .scheme("upi")
             .authority("pay")
@@ -372,10 +406,9 @@ class PayoutActivity : AppCompatActivity() {
 
     private fun redirectToGooglePay() {
         paymentMethod = "Google Pay"
-
         val adjustedTotalAmount = binding.amountTotal.text.toString().replace("₹", "").trim().toInt()
+        binding.amountTotal.setText("₹$adjustedTotalAmount")
 
-        binding.payoutTotalAmount.text = adjustedTotalAmount.toString()
         val uri = Uri.Builder()
             .scheme("upi")
             .authority("pay")
@@ -396,34 +429,6 @@ class PayoutActivity : AppCompatActivity() {
     }
 
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-
-
-        val adjustedTotalAmount = binding.amountTotal.text.toString().replace("₹", "").trim().toInt()
-
-        super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            status = data.getStringExtra("Status")!!.lowercase(Locale.getDefault())
-        }
-        if (requestCode == GOOGLE_PAY_REQUEST_CODE || requestCode == PAYTM_REQUEST_CODE || requestCode == PHONEPE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && status == "success") {
-                Toast.makeText(
-                    this@PayoutActivity,
-                    "Transaction Successful",
-                    Toast.LENGTH_SHORT
-                ).show()
-                navigateToCongratsFragment(adjustedTotalAmount)
-            } else {
-                Toast.makeText(
-                    this@PayoutActivity,
-                    "Transaction Failed",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
     private fun navigateToCongratsFragment(adjustedTotalAmount: Int) {
         userId = auth.currentUser?.uid ?: ""
         val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
@@ -439,15 +444,15 @@ class PayoutActivity : AppCompatActivity() {
             ShopNames.add(textView.text.toString())
         }
 
+
+
         val orderDetails = OrderDetails(
             userId,
-            name,
             foodItemName,
             foodItemPrice,
             foodItemImage,
             foodItemQuantities,
             address,
-            phoneNumber,
             time,
             paymentMethod,
             adjustedTotalAmount,
@@ -455,7 +460,9 @@ class PayoutActivity : AppCompatActivity() {
             orderDate,
             true,
             true,
-            ShopNames // Add pathContainer text list to OrderDetails
+            ShopNames,
+            selectedSlot,
+            foodItemDescription
         )
 
         val orderReference = databaseReference.child("OrderDetails").child(itemPushKey!!)
@@ -463,7 +470,9 @@ class PayoutActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 val bottomSheetDialog = CongratsBottomSheetFragment()
                 bottomSheetDialog.show(supportFragmentManager, "Test")
+
                 removeItemFromCart()
+                removeItemFromCart1()
                 addOrderToHistory(orderDetails)
             }
             .addOnFailureListener {
@@ -476,6 +485,20 @@ class PayoutActivity : AppCompatActivity() {
         userId?.let { uid ->
             val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().reference
             val cartItemReference = databaseReference.child("user").child(uid).child("cartItems")
+            cartItemReference.removeValue().addOnSuccessListener {
+                // Handle success
+                Toast.makeText(this, "Cart item removed successfully", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { error ->
+                // Handle failure
+                Toast.makeText(this, "Failed to remove cartitems 😒", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    private fun removeItemFromCart1() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let { uid ->
+            val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().reference
+            val cartItemReference = databaseReference.child("Home").child(uid).child("cartItems")
             cartItemReference.removeValue().addOnSuccessListener {
                 // Handle success
                 Toast.makeText(this, "Cart item removed successfully", Toast.LENGTH_SHORT).show()
@@ -508,6 +531,8 @@ class PayoutActivity : AppCompatActivity() {
         }
         return totalAmount
     }
+
+
     private fun setUserData() {
         val user = auth.currentUser
         if (user != null) {
@@ -531,14 +556,11 @@ class PayoutActivity : AppCompatActivity() {
                             }
                         }
 
-                        val name = snapshot.child("name").getValue(String::class.java) ?: ""
-                        val address = snapshot.child("address").getValue(String::class.java) ?: ""
-                        val phoneNumber = snapshot.child("phone").getValue(String::class.java) ?: ""
+                         val address = snapshot.child("address").getValue(String::class.java) ?: ""
 
                         binding.apply {
-                            payoutName.setText(name)
                             payoutAddress.setText(address)
-                            payoutPhoneNumber.setText(phoneNumber)
+
                         }
                     }
                 }
@@ -550,6 +572,7 @@ class PayoutActivity : AppCompatActivity() {
         }
     }
 
+
     private fun displayProductPath(path: String?) {
         // Display the path for each product in a TextView
         // For simplicity, let's assume you have a LinearLayout named pathContainer to contain the TextViews
@@ -560,7 +583,6 @@ class PayoutActivity : AppCompatActivity() {
         binding.pathContainer.addView(textView)
 
     }
-
     private fun isValidPhoneNumber(phoneNumber: String): Boolean {
         var formattedPhoneNumber = phoneNumber.trim()
         // Check if the phone number starts with "+91", if not, prepend it

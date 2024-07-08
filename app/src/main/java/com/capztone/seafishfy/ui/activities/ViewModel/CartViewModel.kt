@@ -2,6 +2,8 @@
 
 package com.capztone.seafishfy.ui.activities.ViewModel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capztone.seafishfy.ui.activities.adapters.CartAdapter
@@ -14,6 +16,7 @@ class CartViewModel : ViewModel() {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var userId: String = auth.currentUser?.uid ?: ""
+
 
     fun retrieveCartItems(
         cartItemsCallback: (foodNames: MutableList<String>, foodPrices: MutableList<String>, foodDescriptions: MutableList<String>, foodIngredients: MutableList<String>, foodImageUri: MutableList<String>, paths: MutableList<String>, quantity: MutableList<Int>) -> Unit
@@ -69,6 +72,7 @@ class CartViewModel : ViewModel() {
             itemReference.removeValue()
         }
     }
+
 
     fun isCartEmpty(cartItemsCallback: (Boolean) -> Unit) {
         viewModelScope.launch {

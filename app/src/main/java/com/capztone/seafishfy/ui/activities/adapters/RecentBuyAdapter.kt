@@ -48,7 +48,7 @@ class RecentBuyAdapter(
         fun bind(order: Order) {
             binding.apply {
                 oid.text = "Order Id:         ${order.itemPushKey}"
-                foodName.text = "Food Name:    ${order.foodNames}"
+                foodName.text = "Food Name:    ${extractFoodNames(order.foodNames)}"
                 topDate.text = "${order.orderDate}"
 
                 Glide.with(binding.root)
@@ -58,7 +58,21 @@ class RecentBuyAdapter(
             }
         }
     }
+
+    private fun extractFoodName(foodName: String): String {
+        val slashIndex = foodName.indexOf('/')
+        return if (slashIndex != -1) {
+            foodName.substring(slashIndex + 1).trimEnd(']')
+        } else {
+            foodName.trimEnd(']')
+        }
+    }
+
+    private fun extractFoodNames(foodNames: List<String>): String {
+        return foodNames.joinToString(", ") { extractFoodName(it) }
+    }
 }
+
 
 class OrderDiffCallback : DiffUtil.ItemCallback<Order>() {
     override fun areItemsTheSame(oldItem: Order, newItem: Order): Boolean {

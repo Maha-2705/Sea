@@ -11,19 +11,25 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.FragmentAccountBinding
 import com.capztone.seafishfy.ui.activities.LoginActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class AccountFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: FragmentAccountBinding
-    private lateinit var userNameEditText: EditText
-    private lateinit var userEmailEditText: EditText
+    private lateinit var userNameEditText: TextView
+    private lateinit var userEmailEditText: TextView
     private lateinit var banner: TextView
 
     override fun onCreateView(
@@ -41,23 +47,23 @@ class AccountFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
-        binding.bannerName.text = user?.displayName
         userNameEditText = binding.profileName
         userEmailEditText = binding.profileEmail
 
-        userNameEditText.setText(user?.displayName)
-        userEmailEditText.setText(user?.email)
+        // Fetch and display user details
+        fetchAndDisplayUserDetails(user)
+
         binding.logout.setOnClickListener {
             signOut()
+        }
+        binding.recentBackButton.setOnClickListener {
+            requireActivity().onBackPressed()
         }
 
         // Set onClickListener for logout text
         binding.text.setOnClickListener {
             signOut()
         }
-
-
-
 
         userNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -87,11 +93,94 @@ class AccountFragment : Fragment() {
                 }
             }
         })
-
-        Glide.with(this)
-            .load(user?.photoUrl)
-            .into(binding.profileImage)
     }
+
+    private fun fetchAndDisplayUserDetails(user: FirebaseUser?) {
+        if (user != null) {
+            val userId = user.uid
+            val database = FirebaseDatabase.getInstance()
+
+            // Check paths for HOME, WORK, and OTHER
+            val homeRef = database.getReference("Locations").child(userId).child("HOME")
+            val workRef = database.getReference("Locations").child(userId).child("WORK")
+            val otherRef = database.getReference("Locations").child(userId).child("OTHER")
+
+            // Listener for HOME address
+            homeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val address = snapshot.child("address").getValue(String::class.java) ?: "No Address"
+                        displayUserDetailsFromAddress(address)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database error
+                }
+            })
+
+            // Listener for WORK address
+            workRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val address = snapshot.child("address").getValue(String::class.java) ?: "No Address"
+                        displayUserDetailsFromAddress(address)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database error
+                }
+            })
+
+            // Listener for OTHER address
+            otherRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val address = snapshot.child("address").getValue(String::class.java) ?: "No Address"
+                        displayUserDetailsFromAddress(address)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database error
+                }
+            })
+        }
+    }
+
+    private fun displayUserDetailsFromAddress(address: String) {
+        // Split the address by commas and trim each part
+        val addressParts = address.split(",").map { it.trim() }
+
+        // Extract name (first part after the first comma) and phone number (last part)
+        val name = if (addressParts.size > 1) {
+            val firstCommaIndex = address.indexOf(",")
+            val userName = address.substring(0, firstCommaIndex).trim()
+            userName
+        } else {
+            "No Name"
+        }
+
+        val phoneNumber = addressParts.lastOrNull() ?: "No Phone Number"
+
+        binding.profileName.text = name  // Update the profileName TextView
+        userNameEditText.text = name
+        userEmailEditText.text = phoneNumber
+
+        val photoUrl = FirebaseAuth.getInstance().currentUser?.photoUrl
+        if (photoUrl != null) {
+            Glide.with(this@AccountFragment)
+                .load(photoUrl)
+                .into(binding.profileImage)
+        } else {
+            // Load a default image if no photo URL is available
+            Glide.with(this@AccountFragment)
+                .load(R.drawable.baseline_account_circle_24)
+                .into(binding.profileImage)
+        }
+    }
+
 
     private fun signOut() {
         // Sign out from Firebase Authentication

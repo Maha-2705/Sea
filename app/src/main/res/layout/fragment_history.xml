@@ -3,16 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/bgColor"
+    android:background="@color/white"
     android:layout_height="match_parent"
     tools:context=".ui.activities.fragments.HistoryFragment">
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/emptyCartMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="50dp"
+            android:background="#FFFFFF"
+            android:visibility="gone"
+            >
+
+                <!-- Shopping Bag Icon -->
+                <ImageView
+                    android:id="@+id/shoppingBagIcon"
+                    android:layout_width="550dp"
+                    android:layout_height="450dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/noorders"
+                    />
+
+                <!-- "Your Cart is Empty!" Text -->
+                <TextView
+                    android:id="@+id/emptyCartText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/shoppingBagIcon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:text="You have no previous orders"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/roboto" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/recentBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="35dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/arrow_left"
@@ -22,9 +57,10 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/inika_regular"
+            android:layout_marginTop="35dp"
+            android:fontFamily="@font/roboto"
             android:text="Recent buy Items"
+            android:textFontWeight="400"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"

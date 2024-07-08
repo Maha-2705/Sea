@@ -3,8 +3,10 @@ package com.capztone.seafishfy.ui.activities
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +34,10 @@ class ViewOrderDetails : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityViewOrderDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+        }
 
         viewModel = ViewModelProvider(this).get(ViewODViewModel::class.java)
 
@@ -55,7 +61,6 @@ class ViewOrderDetails : AppCompatActivity() {
 
         observeViewModel()
     }
-
 
     private fun observeViewModel() {
         viewModel.orderDetails.observe(this) { order ->
@@ -139,11 +144,24 @@ class ViewOrderDetails : AppCompatActivity() {
             .into(imageView)
     }
 
+    private fun extractFoodName(foodName: String): String {
+        val slashIndex = foodName.indexOf('/')
+        return if (slashIndex != -1) {
+            foodName.substring(slashIndex + 1).trimEnd(']')
+        } else {
+            foodName.trimEnd(']')
+        }
+    }
+
+    private fun extractFoodNames(foodNames: List<String>): String {
+        return foodNames.joinToString(", ") { extractFoodName(it) }
+    }
+
     private fun displayOrderDetails(order: Order) {
         binding.apply {
             oid.text = "Order ID: ${order.itemPushKey}"
             cid.text = "User ID: ${order.userUid}"
-            foodName.text = "Food Name: ${order.foodNames}"
+            foodName.text = "Food Name: ${extractFoodNames(order.foodNames)}"
             foodPrice.text = "Food Price: ${order.adjustedTotalAmount}"
             quantity.text = "Quantity: ${order.foodQuantities}"
             time.text = "${order.currentTime}"
@@ -158,7 +176,6 @@ class ViewOrderDetails : AppCompatActivity() {
             }
         }
     }
-
     private fun showCancelOrderDialog() {
         // Check the current order status
         viewModel.fetchOrderStatus(orderId) { status ->

@@ -4,21 +4,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bgColor"
+        android:background="@color/white"
         tools:context=".ui.activities.fragments.ShopOneFragment">
+        <ImageView
+            android:id="@+id/recentBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow_left"
+            android:contentDescription="@string/image_desc_text" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Shop 1"
+            android:text=""
             android:textStyle="bold"
             android:textSize="23dp"
             android:textAlignment="center"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,10 +51,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularRecyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            tools:listitem="@layout/popular_items"
+            tools:listitem="@layout/deals_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,27 +66,26 @@
             android:id="@+id/textView19"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="275dp"
-            android:layout_marginTop="957dp"
-            android:fontFamily="@font/inika_regular"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/roboto"
             android:text="Dry Fish"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/popularRecyclerView"
 
             />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularRecyclerView1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            tools:listitem="@layout/popular_items"
+            android:layout_marginTop="20dp"
+            android:padding="3dp"
+            android:background="@color/llorange"
+            tools:listitem="@layout/menu_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,25 +99,26 @@
             android:id="@+id/textView21"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1280dp"
-            android:layout_marginStart="16dp"
+
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="280dp"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="Pickles"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/popularRecyclerView1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+              />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularRecyclerView3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            tools:listitem="@layout/popular_items"
+            android:layout_marginTop="20dp"
+            android:padding="4dp"
+            tools:listitem="@layout/menu_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,48 +131,33 @@
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="245dp"
-            android:layout_marginTop="625dp"
-            android:fontFamily="@font/inika_regular"
-            android:text="@string/deal_of_the_day"
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/roboto"
+            android:text="deal of the day"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/discountRecyclerView"/>
 
 
-        <TextView
-            android:id="@+id/menu_item_textView"
-            android:layout_width="80dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="290dp"
-            android:background="@drawable/textviewshape"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:text="@string/view_menu"
-            android:textColor="@color/navy"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shop1pic" />
+
 
         <TextView
             android:id="@+id/textView27"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="290dp"
-            android:fontFamily="@font/inika_regular"
+            android:fontFamily="@font/roboto"
             android:text="Flash Sale"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shop1pic"/>
 
@@ -170,24 +166,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="160dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="170dp"
-            android:fontFamily="@font/lato_bold"
+            android:fontFamily="@font/roboto"
             android:text="(It opens only 5PM)"
             android:textColor="@color/green"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textView27"
             app:layout_constraintTop_toBottomOf="@+id/shop1pic" />
 
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/discountRecyclerView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:background="@color/llorange"
+            android:padding="3dp"
             tools:listitem="@layout/discount_items"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"

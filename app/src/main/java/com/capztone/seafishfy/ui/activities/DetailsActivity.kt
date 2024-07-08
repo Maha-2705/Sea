@@ -1,36 +1,28 @@
 package com.capztone.seafishfy.ui.activities
 
-import android.content.Intent
+import android.content.ContentValues.TAG
 import android.graphics.text.LineBreaker
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.capztone.seafishfy.R
-
 import com.capztone.seafishfy.databinding.ActivityDetailsBinding
 import com.capztone.seafishfy.ui.activities.models.CartItems
-import com.capztone.seafishfy.ui.activities.models.DiscountItem
 import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
-import com.capztone.seafishfy.ui.activities.fragments.CartFragment
-import com.capztone.seafishfy.ui.activities.fragments.MenuBottomSheetFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import android.text.Layout
 
 class DetailsActivity : AppCompatActivity() {
 
    private lateinit var binding: ActivityDetailsBinding
    private var foodName: String? = null
+   private var productQuantity: String? = null
    private var foodPrice: String? = null
    private var foodDescription: String? = null
    private var discount: String? = null
@@ -42,6 +34,7 @@ class DetailsActivity : AppCompatActivity() {
    private var foodImages: String? = null
    private var quantity: Int = 1
    private lateinit var auth: FirebaseAuth
+   private var isFavorited: Boolean = false
 
    private var lastClickTime: Long = 0
    private val debounceDuration: Long = 1000 // 1 second debounce duration
@@ -53,7 +46,8 @@ class DetailsActivity : AppCompatActivity() {
       setContentView(binding.root)
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-         binding.detailsShortDescriptionTextView.justificationMode = LineBreaker.JUSTIFICATION_MODE_INTER_WORD
+         binding.detailsShortDescriptionTextView.justificationMode =
+            LineBreaker.JUSTIFICATION_MODE_INTER_WORD
       }
 
       auth = FirebaseAuth.getInstance()
@@ -62,46 +56,66 @@ class DetailsActivity : AppCompatActivity() {
          foodPrice = intent.getStringExtra("MenuItemPrice")
          foodDescription = intent.getStringExtra("MenuItemDescription")
          foodImage = intent.getStringExtra("MenuItemImage")
+         productQuantity = intent.getStringExtra("MenuQuantity")
       } else if (intent.hasExtra("DiscountItemName")) {
          foodNames = intent.getStringExtra("DiscountItemName")
          foodPrices = intent.getStringExtra("DiscountItemPrice")
          foodDescriptions = intent.getStringExtra("DiscountItemDescription")
          foodImages = intent.getStringExtra("DiscountItemImage")
+         productQuantity= intent.getStringExtra("DiscountQuantity")
+         discount=intent.getStringExtra("discounts")
       }
 
       with(binding) {
          if (intent.hasExtra("MenuItemName")) {
-            detailFoodNameTextView.text = intent.getStringExtra("MenuItemName")
+            val foodName = intent.getStringExtra("MenuItemName")
+            val foodNameParts = foodName?.split("/") ?: listOf("", "") // Split by '/' if exists, or default to empty strings
+
+            detailFoodNameTextView.text = foodNameParts.getOrNull(0) ?: ""
+            detailFoodNameTextView1.text = foodNameParts.getOrNull(1) ?: "" // Assign second part to detailFoodNameTextView1
             detailsShortDescriptionTextView.text = intent.getStringExtra("MenuItemDescription")
+            textView22.text = intent.getStringExtra("MenuQuantity")
             val price = intent.getStringExtra("MenuItemPrice")
             textView21.text = "Price : ₹$price"
             Glide.with(this@DetailsActivity)
                .load(Uri.parse(intent.getStringExtra("MenuItemImage")))
                .into(detailImageView)
 
-            val firebasePaths = listOf("Shop 1", "Shop 2", "Shop 3", "Shop 4", "Shop 5", "Shop 6")
+
+
             foodName?.let {
                val description = intent.getStringExtra("MenuItemDescription")
                if (description != null) {
-                  fetchItemPath(it, description, firebasePaths) { path ->
-                     shopname.text = path ?: "Item not found in any path"
+                  fetchShopLocations { shopLocations ->
+                     fetchItemPath(it, description, shopLocations) { path ->
+                        shopname.text = path ?: "Item not found in any path"
+                     }
                   }
                }
             }
          } else if (intent.hasExtra("DiscountItemName")) {
-            detailFoodNameTextView.text = intent.getStringExtra("DiscountItemName")
+            val foodName = intent.getStringExtra("DiscountItemName")
+            val foodNameParts = foodName?.split("/") ?: listOf("", "") // Split by '/' if exists, or default to empty strings
+
+            detailFoodNameTextView.text = foodNameParts.getOrNull(0) ?: ""
+            detailFoodNameTextView1.text = foodNameParts.getOrNull(1) ?: "" // Assign second part to detailFoodNameTextView1
             detailsShortDescriptionTextView.text = intent.getStringExtra("DiscountItemDescription")
+             textView22.text = intent.getStringExtra("DiscountQuantity")
+
             val price = intent.getStringExtra("DiscountItemPrice")
             textView21.text = "Price : ₹$price"
             Glide.with(this@DetailsActivity)
                .load(Uri.parse(intent.getStringExtra("DiscountItemImage")))
                .into(detailImageView)
-            val firebasePaths1 = listOf("Shop 1", "Shop 2", "Shop 3", "Shop 4", "Shop 5", "Shop 6")
-            foodNames?.let {
+
+
+            foodName?.let {
                val description = intent.getStringExtra("DiscountItemDescription")
                if (description != null) {
-                  fetchItemPath1(it, description, firebasePaths1) { path ->
-                     shopname.text = path ?: "Item not found in any path"
+                  fetchShopLocations { shopLocations ->
+                     fetchItemPath1(it, description, shopLocations) { path ->
+                        shopname.text = path ?: "Item not found in any path"
+                     }
                   }
                }
             }
@@ -113,6 +127,7 @@ class DetailsActivity : AppCompatActivity() {
       binding.detailGoToBackImageButton.setOnClickListener {
          finish()
       }
+
       binding.plusImageButton.setOnClickListener {
          quantity++
          updateQuantityText()
@@ -123,13 +138,35 @@ class DetailsActivity : AppCompatActivity() {
             updateQuantityText()
          }
       }
+
       binding.detailAddToCartButton.setOnClickListener {
          val currentTime = System.currentTimeMillis()
          if (currentTime - lastClickTime > debounceDuration) {
             lastClickTime = currentTime
             addItemToCart()
+
          }
       }
+   }
+
+
+
+
+   private fun fetchShopLocations(onComplete: (List<String>) -> Unit) {
+      val database = FirebaseDatabase.getInstance().reference
+      val shopLocationsRef = database.child("ShopLocations")
+
+      shopLocationsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+         override fun onDataChange(dataSnapshot: DataSnapshot) {
+            val shopLocations = dataSnapshot.children.mapNotNull { it.key }
+            onComplete(shopLocations)
+         }
+
+         override fun onCancelled(databaseError: DatabaseError) {
+            // Handle error
+            onComplete(emptyList())
+         }
+      })
    }
 
    private fun fetchItemPath(
@@ -150,7 +187,7 @@ class DetailsActivity : AppCompatActivity() {
                childReference.addListenerForSingleValueEvent(object : ValueEventListener {
                   override fun onDataChange(snapshot: DataSnapshot) {
                      snapshot.children.forEach { shopSnapshot ->
-                        if (shopSnapshot.child("foodName").value == itemName &&
+                        if (
                            shopSnapshot.child("foodDescription").value == itemDescription
                         ) {
                            onComplete("$shopPath")
@@ -165,8 +202,8 @@ class DetailsActivity : AppCompatActivity() {
                })
             }
          }
-         onComplete(null)
       }
+      onComplete(null)
    }
 
    private fun fetchItemPath1(
@@ -186,7 +223,7 @@ class DetailsActivity : AppCompatActivity() {
             childReference.addListenerForSingleValueEvent(object : ValueEventListener {
                override fun onDataChange(snapshot: DataSnapshot) {
                   snapshot.children.forEach { shopSnapshot ->
-                     if (shopSnapshot.child("foodNames").value == itemName &&
+                     if (
                         shopSnapshot.child("foodDescriptions").value == itemDescription
                      ) {
                         onComplete(path)
@@ -227,9 +264,9 @@ class DetailsActivity : AppCompatActivity() {
 
             if (differentShopFound) {
                AlertDialog.Builder(this@DetailsActivity)
-                  .setTitle("Replace Item")
+                  .setTitle("Different Shop")
                   .setMessage("You have items from a different shop in your cart. Do you want to clear the cart and add this item?")
-                  .setPositiveButton("Replace") { _, _ ->
+                  .setPositiveButton("Yes") { _, _ ->
                      cartItemsRef.removeValue().addOnSuccessListener {
                         addItemToCartWithoutCheck()
                      }
@@ -261,8 +298,20 @@ class DetailsActivity : AppCompatActivity() {
             cartQuery.addListenerForSingleValueEvent(object : ValueEventListener {
                override fun onDataChange(dataSnapshot: DataSnapshot) {
                   if (dataSnapshot.exists()) {
-                     ToastHelper.showCustomToast(this@DetailsActivity, "This item is already in your cart")
+                     // Item already in cart, update quantity
+                     for (cartSnapshot in dataSnapshot.children) {
+                        val currentQuantity = cartSnapshot.child("foodQuantity").getValue(Int::class.java) ?: 1
+                        val newQuantity = currentQuantity + quantity
+                        cartSnapshot.ref.child("foodQuantity").setValue(newQuantity)
+                           .addOnSuccessListener {
+                              updateHomeCartQuantity(foodName!!,quantity)
+                              ToastHelper.showCustomToast(this@DetailsActivity, "Item quantity updated in cart successfully 🥰")
+                           }.addOnFailureListener {
+                              ToastHelper.showCustomToast(this@DetailsActivity, "Failed to update item quantity 😒")
+                           }
+                     }
                   } else {
+                     // Item not in cart, add new item
                      val cartItem = CartItems(
                         shopname.toString(),
                         foodName!!,
@@ -285,49 +334,93 @@ class DetailsActivity : AppCompatActivity() {
                }
             })
          }
+
+         if (foodNames != null && foodPrices != null && foodDescriptions != null && foodImages != null) {
+            val cartItemQuery = database.child("user").child(userId).child("cartItems")
+               .orderByChild("foodName").equalTo(foodNames)
+
+            cartItemQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+               override fun onDataChange(snapshot: DataSnapshot) {
+                  if (snapshot.exists()) {
+                     // Discount item already in cart, update quantity
+                     for (cartSnapshot in snapshot.children) {
+                        val currentQuantity = cartSnapshot.child("foodQuantity").getValue(Int::class.java) ?: 1
+                        val newQuantity = currentQuantity + quantity
+                        cartSnapshot.ref.child("foodQuantity").setValue(newQuantity)
+                           .addOnSuccessListener {
+                              foodName?.let { it1 -> updateHomeCartQuantity(it1,quantity) }
+                              ToastHelper.showCustomToast(
+                                 this@DetailsActivity,
+                                 "Discount item quantity updated in cart successfully 🥰"
+                              )
+                           }.addOnFailureListener {
+                              ToastHelper.showCustomToast(
+                                 this@DetailsActivity,
+                                 "Failed to update discount item quantity 😒"
+                              )
+                           }
+                     }
+                  } else {
+                     // Discount item not in cart, add new item
+                     val cartItem = CartItems(
+                        shopname.toString(),
+                        foodNames!!,
+                        foodPrices!!,
+                        foodDescriptions!!,
+                        foodImages!!,
+                        quantity
+                     )
+
+                     database.child("user").child(userId).child("cartItems").push()
+                        .setValue(cartItem)
+                        .addOnSuccessListener {
+                           foodName?.let { it1 -> updateHomeCartQuantity(it1,quantity) }
+                           ToastHelper.showCustomToast(
+                              this@DetailsActivity,
+                              "Discount item added to cart successfully 🥰"
+                           )
+                        }.addOnFailureListener {
+                           ToastHelper.showCustomToast(
+                              this@DetailsActivity,
+                              "Failed to add discount item 😒"
+                           )
+                        }
+                  }
+               }
+
+               override fun onCancelled(error: DatabaseError) {
+                  // Handle onCancelled
+               }
+            })
+         }
       }
+   }
 
-      if (foodNames != null && foodPrices != null && foodDescriptions != null && foodImages != null) {
-         val cartItemQuery = database.child("user").child(userId).child("cartItems")
-            .orderByChild("foodName").equalTo(foodNames)
 
-         cartItemQuery.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-               if (snapshot.exists()) {
-                  ToastHelper.showCustomToast(
-                     this@DetailsActivity,
-                     "This discount product is already in your cart"
-                  )
-               } else {
-                  val cartItem = CartItems(
-                     shopname.toString(),
-                     foodNames!!,
-                     foodPrices!!,
-                     foodDescriptions!!,
-                     foodImages!!,
-                     quantity
-                  )
 
-                  database.child("user").child(userId).child("cartItems").push()
-                     .setValue(cartItem)
+   private fun updateHomeCartQuantity(foodName: String, quantity: Int) {
+      val userId = auth.currentUser?.uid ?: return
+      val homeCartRef =
+         FirebaseDatabase.getInstance().reference.child("Home").child(userId).child("cartItems")
+
+      homeCartRef.orderByChild("foodName").equalTo(foodName)
+         .addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+               for (cartSnapshot in dataSnapshot.children) {
+                  cartSnapshot.ref.child("foodQuantity").setValue(quantity)
                      .addOnSuccessListener {
-                        ToastHelper.showCustomToast(
-                           this@DetailsActivity,
-                           "Discount item added to cart successfully 🥰"
-                        )
-                     }.addOnFailureListener {
-                        ToastHelper.showCustomToast(
-                           this@DetailsActivity,
-                           "Failed to add discount item 😒"
-                        )
+                        // Handle success (optional)
+                     }.addOnFailureListener { e ->
+                        Log.e(TAG, "Failed to update foodQuantity: ${e.message}")
+                        // Handle failure (optional)
                      }
                }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-               // Handle onCancelled
+            override fun onCancelled(databaseError: DatabaseError) {
+               Log.e(TAG, "Database error: ${databaseError.message}")
+               // Handle onCancelled (optional)
             }
          })
-      }
    }
 }

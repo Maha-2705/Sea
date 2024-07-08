@@ -1,14 +1,18 @@
 package com.capztone.seafishfy.ui.activities.adapters
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.DiscountItemsBinding
-import com.capztone.seafishfy.ui.activities.DetailsActivity
 import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
+import com.capztone.seafishfy.ui.activities.fragments.DetailsFragment
 import com.capztone.seafishfy.ui.activities.models.DiscountItem
 import java.util.*
 
@@ -37,7 +41,7 @@ class DiscountAdapter(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     if (isDiscountRecyclerViewClickable()) {
-                        openDiscountDetailsActivity(position)
+                        openDiscountDetailsActivity(it,position)
                     } else {
                         // Show toast message if DiscountRecyclerView is not clickable
                         // You can customize the message as needed
@@ -55,30 +59,36 @@ class DiscountAdapter(
         }
 
         // Open discount details activity
-        private fun openDiscountDetailsActivity(position: Int) {
-            val discountItem = discountItems[position]
+        private fun   openDiscountDetailsActivity(view: View, position: Int) {
+            val menuItem =  discountItems[position]
+            val bundle = Bundle().apply {
+                putString("MenuItemName", menuItem.foodNames?.getOrNull(0) ?: "")
+                putString("MenuItemPrice", menuItem.foodPrices)
+                putString("MenuItemDescription", menuItem.foodDescriptions)
+                putString("MenuItemImage", menuItem.foodImages)
+                putString("MenuQuantity", menuItem.productQuantity)
+            }
 
-            // Intent to open details activity and Pass data
-            val intent = Intent(context, DetailsActivity::class.java)
-            intent.putExtra("DiscountItemName", discountItem.foodNames)
-            intent.putExtra("DiscountItemPrice", discountItem.foodPrices)
-            intent.putExtra("DiscountItemDescription", discountItem.foodDescriptions)
-            intent.putExtra("DiscountItemImage", discountItem.foodImages)
-            intent.putExtra("DiscountAmount", discountItem.discounts)
-
-            context.startActivity(intent)  // Start the details Activity
+            // Navigate to the details fragment using NavController
+            view.findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
         }
-
         // Set data in RecyclerView items
         fun bind(position: Int) {
             val discountItem = discountItems[position]
             binding.apply {
-                discountfoodname.text = discountItem.foodNames
-                val priceWithPrefix = "₹${discountItem.foodPrices}" // Prefixing the price with "₹"
-                discountprice.text = priceWithPrefix
-                discounttextview.text = discountItem.discounts
-                val url = Uri.parse(discountItem.foodImages)
-                Glide.with(context).load(url).into(discountimage)
+                val foodName = discountItem.foodNames?.toString()?.replace("[", "")?.replace("]", "") ?: ""
+                val slashIndex = foodName.indexOf("/")
+                if (slashIndex != -1 && slashIndex < foodName.length - 1) {
+                    discountfoodname.text = foodName.substring(0, slashIndex + 1).trim()
+                    menuFoodName2.text = foodName.substring(slashIndex + 1).trim()
+                } else {
+                    discountfoodname.text = foodName
+                    menuFoodName2.text = ""
+                }
+                discounttextview.text=discountItem.discounts
+                Qty.text = "${discountItem.productQuantity}"
+                discountprice.text = "₹${discountItem.foodPrices}"
+                Glide.with(context).load(Uri.parse(discountItem.foodImages)).into(discountimage)
             }
         }
     }

@@ -39,6 +39,10 @@ class HistoryFragment : Fragment() {
   binding.recentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
   binding.recentRecyclerView.adapter = adapter
 
+  binding.recentBackButton.setOnClickListener {
+   requireActivity().onBackPressed()
+  }
+
   observeOrders()
  }
 
@@ -46,15 +50,23 @@ class HistoryFragment : Fragment() {
   viewModel.orders.observe(viewLifecycleOwner) { orders ->
    orders?.let {
     adapter.submitList(orders)
-   }
+    updateEmptyOrdersMessageVisibility(orders.isEmpty())   }
   }
  }
-
+ private fun updateEmptyOrdersMessageVisibility(isEmpty: Boolean) {
+  if (isEmpty) {
+   binding.emptyCartMessage.visibility = View.VISIBLE
+   binding.recentRecyclerView.visibility = View.GONE
+  } else {
+   binding.emptyCartMessage.visibility = View.GONE
+   binding.recentRecyclerView.visibility = View.VISIBLE
+  }
+ }
  fun onCancelOrder(orderId: String) {
   CoroutineScope(Dispatchers.Main).launch {
    val isSuccess = viewModel.cancelOrder(orderId)
    if (isSuccess) {
-    ToastHelper.showCustomToast(context, "Your order has been cancelled")
+    context?.let { ToastHelper.showCustomToast(it, "Your order has been cancelled") }
    } else {
     Toast.makeText(requireContext(), "Failed to cancel order", Toast.LENGTH_SHORT).show()
    }
@@ -71,4 +83,5 @@ class HistoryFragment : Fragment() {
    viewModel.fetchOrders()
   }
  }
+
 }

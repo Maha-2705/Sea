@@ -2,67 +2,87 @@ package com.capztone.seafishfy.ui.activities.ViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.capztone.seafishfy.ui.activities.models.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchViewModel : ViewModel() {
     val menuItemsLiveData: MutableLiveData<List<MenuItem>> = MutableLiveData()
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     fun retrieveMenuItems() {
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        val userId = auth.currentUser?.uid ?: return
 
-        currentUserUid?.let { uid ->
-            database = FirebaseDatabase.getInstance()
-            val userLocationReference = database.reference.child("locations").child(uid)
+        // Fetch user language first
+        database.getReference("user").child(userId).child("language")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(languageSnapshot: DataSnapshot) {
+                    val userLanguage =
+                        languageSnapshot.getValue(String::class.java)?.toLowerCase() ?: "english"
 
-            userLocationReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val shopNamesString = snapshot.child("shopname").getValue(String::class.java)
-                    shopNamesString?.let { shopNames ->
-                        val shopNamesList = shopNames.split(",").map { it.trim() }
-                        shopNamesList.forEach { shopName ->
-                            fetchMenuItemsForShop(shopName)
-                        }
-                    }
-                }
+                    val userLocationRef = database.getReference("Locations").child(userId)
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle onCancelled
-                }
-            })
-        }
-    }
-
-    private fun fetchMenuItemsForShop(shopName: String) {
-        val menuReferences = listOf(
-            database.reference.child(shopName).child("menu"),
-            database.reference.child(shopName).child("menu1"),
-            database.reference.child(shopName).child("menu2")
-        )
-
-
-
-        viewModelScope.launch {
-            val menuItems = mutableListOf<MenuItem>()
-            withContext(Dispatchers.IO) {
-                menuReferences.forEach { reference ->
-                    reference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    userLocationRef.addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            for (foodSnapshot in snapshot.children) {
-                                val menuItem = foodSnapshot.getValue(MenuItem::class.java)
-                                menuItem?.let {
-                                    menuItems.add(it)
+                            val shopNamesString = snapshot.child("shopname").getValue(String::class.java)
+                            shopNamesString?.let { shopNames ->
+                                val shopNamesList = shopNames.split(",").map { it.trim() }
+                                val menuItems = mutableListOf<MenuItem>()
+
+                                shopNamesList.forEach { shopName ->
+                                    val menuRefs = listOf(
+                                        database.getReference(shopName).child("menu"),
+                                        database.getReference(shopName).child("menu1"),
+                                        database.getReference(shopName).child("menu2")
+                                        // Add more menu references as needed
+                                    )
+
+                                    menuRefs.forEach { menuRef ->
+                                        menuRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                            override fun onDataChange(menuSnapshot: DataSnapshot) {
+                                                if (menuSnapshot.exists()) {
+                                                    for (itemSnapshot in menuSnapshot.children) {
+                                                        val menuItem =
+                                                            itemSnapshot.getValue(MenuItem::class.java)
+                                                        menuItem?.let {
+                                                            // Retrieve the foodNames in English and user-selected language
+                                                            val foodNamesList = it.foodName ?: arrayListOf("", "", "", "")
+                                                            val englishName = foodNamesList.getOrNull(0) ?: ""
+                                                            val languageSpecificName = when (userLanguage) {
+                                                                "tamil" -> foodNamesList.getOrNull(1) ?: ""
+                                                                "malayalam" -> foodNamesList.getOrNull(2) ?: ""
+                                                                "telugu" -> foodNamesList.getOrNull(3) ?: ""
+                                                                else -> englishName // Default to English
+                                                            }
+
+                                                            // Create a combined name with both English and language-specific names
+                                                            val combinedName =
+                                                                "$englishName / $languageSpecificName"
+
+                                                            // Update the foodName list in MenuItem
+                                                            it.foodName = arrayListOf(combinedName)
+
+                                                            // Add the menuItem to the list
+                                                            menuItems.add(it)
+                                                        }
+                                                    }
+                                                }
+                                                // Post updated menu items to LiveData after processing all menuRefs
+                                                menuItemsLiveData.postValue(menuItems)
+                                            }
+
+                                            override fun onCancelled(error: DatabaseError) {
+                                                // Handle onCancelled
+                                            }
+                                        })
+                                    }
                                 }
                             }
-                            menuItemsLiveData.postValue(menuItems.toList())
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -70,7 +90,10 @@ class SearchViewModel : ViewModel() {
                         }
                     })
                 }
-            }
-        }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle onCancelled
+                }
+            })
     }
 }

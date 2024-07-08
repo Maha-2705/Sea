@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.capztone.seafishfy.databinding.PopularItemsBinding
-import com.capztone.seafishfy.ui.activities.DetailsActivity
+import com.capztone.seafishfy.ui.activities.fragments.DetailsFragment
 
 class PopularAdapter(
     private val items: List<String>,
@@ -34,7 +34,7 @@ class PopularAdapter(
         holder.bind(item, price, images)
         holder.itemView.setOnClickListener {
             // set On Click Listener to Open Details
-            val intent = Intent(requireContext, DetailsActivity::class.java)
+            val intent = Intent(requireContext,  DetailsFragment::class.java)
             intent.putExtra("MenuItemName", item)
             intent.putExtra("MenuItemImage", images)
             requireContext.startActivity(intent)

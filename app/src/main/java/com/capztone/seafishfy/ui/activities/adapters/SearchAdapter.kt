@@ -1,20 +1,25 @@
 package com.capztone.seafishfy.ui.activities.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.SearchItemBinding
-import com.capztone.seafishfy.ui.activities.DetailsActivity
+import com.capztone.seafishfy.ui.activities.fragments.DetailsFragment
 import com.capztone.seafishfy.ui.activities.models.MenuItem
 
 class SearchAdapter(
     private var menuItems: List<MenuItem>,
-    private val requireContext: Context,
+    private val context: Context
 ) : RecyclerView.Adapter<SearchAdapter.MenuViewHolder>() {
+
     private var filteredMenuItems: List<MenuItem> = menuItems
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
@@ -35,31 +40,41 @@ class SearchAdapter(
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    openDetailsActivity(position)
+                    openDetailsFragment(it,position)
                 }
             }
         }
 
-        private fun openDetailsActivity(position: Int) {
+        private fun openDetailsFragment(view: View, position: Int) {
             val menuItem = filteredMenuItems[position]
-
-            // Intent to open details activity and Pass data
-            val intent = Intent(requireContext, DetailsActivity::class.java).apply {
-                putExtra("MenuItemName", menuItem.foodName)
-                putExtra("MenuItemPrice", menuItem.foodPrice)
-                putExtra("MenuItemDescription", menuItem.foodDescription)
-                putExtra("MenuItemImage", menuItem.foodImage)
+            val bundle = Bundle().apply {
+                putString("MenuItemName", menuItem.foodName?.getOrNull(0) ?: "")
+                putString("MenuItemPrice", menuItem.foodPrice)
+                putString("MenuItemDescription", menuItem.foodDescription)
+                putString("MenuItemImage", menuItem.foodImage)
+                putString("MenuQuantity", menuItem.productQuantity)
             }
-            requireContext.startActivity(intent)  // Start the  details Activity
-        }
 
+            // Navigate to the details fragment using NavController
+            view.findNavController().navigate(R.id.action_searchFragment_to_detailsFragment, bundle)
+        }
         fun bind(menuItem: MenuItem) {
             binding.apply {
-                menuFoodName.text = menuItem.foodName
+                // Join food names with commas
+                val foodName =
+                    menuItem.foodName?.toString()?.replace("[", "")?.replace("]", "") ?: ""
+                val slashIndex = foodName.indexOf("/")
+                if (slashIndex != -1 && slashIndex < foodName.length - 1) {
+                    menuFoodName.text = foodName.substring(0, slashIndex + 1).trim()
+                    menuFoodName1.text = foodName.substring(slashIndex + 1).trim()
+                } else {
+                    menuFoodName.text = foodName
+                    menuFoodName1.text = ""
+                }
                 val priceWithPrefix = "₹${menuItem.foodPrice}" // Prefixing the price with "₹"
                 menuPrice.text = priceWithPrefix
                 val url = Uri.parse(menuItem.foodImage)
-                Glide.with(requireContext).load(url).into(menuImage)
+                Glide.with(context).load(url).into(menuImage)
             }
         }
     }
@@ -68,7 +83,10 @@ class SearchAdapter(
         filteredMenuItems = if (query.isEmpty()) {
             menuItems
         } else {
-            menuItems.filter { it.foodName?.contains(query, ignoreCase = true) == true }
+            menuItems.filter { menuItem ->
+                // Check if the English name contains the query
+                menuItem.foodName?.getOrNull(0)?.contains(query, ignoreCase = true) ?: false
+            }
         }
         notifyDataSetChanged()
     }
