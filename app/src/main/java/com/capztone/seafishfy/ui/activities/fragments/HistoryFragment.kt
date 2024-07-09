@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.FragmentHistoryBinding
 import com.capztone.seafishfy.ui.activities.Utils.ToastHelper
 import com.capztone.seafishfy.ui.activities.adapters.RecentBuyAdapter
@@ -42,6 +44,9 @@ class HistoryFragment : Fragment() {
   binding.recentBackButton.setOnClickListener {
    requireActivity().onBackPressed()
   }
+  binding.shopnow.setOnClickListener {
+   findNavController().navigate(R.id.action_cartFragment_to_homefragment)
+  }
 
   observeOrders()
  }
@@ -57,8 +62,10 @@ class HistoryFragment : Fragment() {
   if (isEmpty) {
    binding.emptyCartMessage.visibility = View.VISIBLE
    binding.recentRecyclerView.visibility = View.GONE
+   binding.shopnow.visibility=View.VISIBLE
   } else {
    binding.emptyCartMessage.visibility = View.GONE
+   binding.shopnow.visibility = View.GONE
    binding.recentRecyclerView.visibility = View.VISIBLE
   }
  }

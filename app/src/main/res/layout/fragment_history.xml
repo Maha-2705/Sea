@@ -35,11 +35,20 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/shoppingBagIcon"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="80dp"
                     android:text="You have no previous orders"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:fontFamily="@font/roboto" />
+            <Button
+                android:id="@+id/shopnow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Shop Now"
+                android:background="@drawable/greenbuttongradent"
+                android:layout_marginTop="600dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="100dp" />
         </RelativeLayout>
 
         <ImageView

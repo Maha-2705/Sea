@@ -80,6 +80,9 @@ class CartFragment : Fragment(), CartProceedClickListener {
                 // Navigate to the profile fragment
                 findNavController().navigate(R.id.action_cartFragment_to_homefragment)
             }
+            binding.shopnow.setOnClickListener {
+                findNavController().navigate(R.id.action_cartFragment_to_homefragment)
+            }
             binding.recentBackButtonn.setOnClickListener {
                 // Navigate to the profile fragment
                 findNavController().navigate(R.id.action_cartFragment_to_homefragment)
@@ -92,6 +95,7 @@ class CartFragment : Fragment(), CartProceedClickListener {
 
 
             }
+
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.capztone.seafishfy.databinding.FragmentFreshFishBinding
 import com.capztone.seafishfy.databinding.FragmentSearchBinding
 import com.capztone.seafishfy.ui.activities.MainActivity
@@ -67,7 +68,7 @@ class FreshFishFragment: Fragment() {
 
     private fun showAllMenu(menuItems: List<MenuItem>) {
         adapter = FreshFishAdapter(menuItems.toMutableList(), requireContext())
-        binding.freshfishrecycler.layoutManager = GridLayoutManager(requireContext(),3)
+        binding.freshfishrecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.freshfishrecycler.adapter = adapter // Set the adapter here
     }
 

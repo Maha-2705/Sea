@@ -88,7 +88,8 @@ class PayoutActivity : AppCompatActivity() {
         databaseReference = FirebaseDatabase.getInstance().reference
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setUserData()
-
+        selectedSlot = "10.00 Am - 12.00 Pm" // default slot value
+        binding.Slot.text = selectedSlot
         binding.changeAddress.setOnClickListener {
             val addressFragment = AddressFragment()
             addressFragment.show(supportFragmentManager, addressFragment.tag)
@@ -218,7 +219,6 @@ class PayoutActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showPopupMenu1() {
         // Inflate the custom dialog layout
         val dialogView = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
@@ -237,6 +237,9 @@ class PayoutActivity : AppCompatActivity() {
         val btnOk = dialogView.findViewById<AppCompatButton>(R.id.btn_ok)
         val btnCancel = dialogView.findViewById<AppCompatButton>(R.id.btn_cancel)
 
+        // Programmatically select the first radio button
+        radioGroup.check(radioGroup.getChildAt(0).id) // Selects the first radio button
+
         // Set up OK button click listener
         btnOk.setOnClickListener {
             // Get selected radio button id
@@ -249,7 +252,7 @@ class PayoutActivity : AppCompatActivity() {
 
                 // Update UI with selected slot
                 binding.Slot.text = selectedSlotText
-                selectedSlot = selectedSlotText
+                selectedSlot = selectedSlotText // Update selectedSlot variable
 
                 alertDialog.dismiss()
             } else {
@@ -269,7 +272,6 @@ class PayoutActivity : AppCompatActivity() {
         // Set the background to be transparent
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
-
 
     private fun placeTheOrder() {
         handlePlaceMyOrderClick()

@@ -22,7 +22,7 @@ class AddressAdapter(private val onItemClick: (String) -> Unit) : RecyclerView.A
     private val database: DatabaseReference? =
         userId?.let { FirebaseDatabase.getInstance().getReference("Locations").child(it) }
 
-    private var selectedPosition = RecyclerView.NO_POSITION
+    private var selectedPosition = 0
 
     init {
         fetchData()
