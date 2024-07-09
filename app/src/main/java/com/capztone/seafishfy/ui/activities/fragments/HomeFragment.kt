@@ -75,7 +75,7 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
     private lateinit var adapter1: PreviousOrderAdapter
     private lateinit var categories: MutableList<Category>
     private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var quantityViewModel: QuantityViewModel
+
     private lateinit var homeDiscountAdapter: HomeDiscountAdapter // Initialize HomeDiscountAdapter
 
 
@@ -128,7 +128,7 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
             layoutManager = LinearLayoutManager(context)
             adapter = exploreShopAdapter
         }
-        quantityViewModel = ViewModelProvider(this).get(QuantityViewModel::class.java)
+
         categories = mutableListOf()
         categoryAdapter = CategoryAdapter(requireContext(), categories) { category ->
             storeCategoryAndOpenFragment(category)
@@ -179,14 +179,7 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
             binding.progressBar.visibility = View.GONE
         }, 500) // 500 milliseconds delay
     }
-    fun saveQuantityToViewModel(foodName: String, quantity: Int) {
-        quantityViewModel.quantityMap[foodName] = quantity
-    }
 
-    // Retrieve quantity from ViewModel
-    fun getQuantityFromViewModel(foodName: String): Int {
-        return quantityViewModel.quantityMap[foodName] ?: 0
-    }
     private fun updateTitlesVisibility(
         menuItems: MutableList<MenuItem>,
         cartItems: MutableList<CartItems>,
@@ -216,17 +209,28 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
                     if (snapshot.exists()) {
                         val shopNames = snapshot.child("shopname").getValue(String::class.java)
                         shopNames?.let { names ->
-                            val shopNameList = names.split(",") // Split shop names by comma
-                            shopNameList.forEach { shopName ->
-                                fetchDiscountItems(shopName.trim())
-                                // Trim whitespace from shop name
+                            if (names.isNotBlank()) {
+                                val shopNameList = names.split(",") // Split shop names by comma
+                                shopNameList.forEach { shopName ->
+                                    fetchDiscountItems(shopName.trim())
+                                    // Trim whitespace from shop name
+                                }
+                            } else {
+                                // Navigate to LocationNotAvailableActivity
+                                startActivity(Intent(context, LocationNotAvailable::class.java))
+                                activity?.finish() // Optionally finish current activity
                             }
                         }
+                    } else {
+                        // Navigate to LocationNotAvailableActivity
+                        startActivity(Intent(context, LocationNotAvailable ::class.java))
+                        activity?.finish() // Optionally finish current activity
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     // Handle error
+                    Log.e("fetchShopName", "Error fetching shop names", error.toException())
                 }
             })
         }
@@ -536,7 +540,6 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
                                                 it.path = shopName
 
                                                 // Select the appropriate foodNames based on the user's language
-
                                                 val foodNamesList = it.foodName ?: arrayListOf()
                                                 val englishName = foodNamesList.getOrNull(0) ?: ""
                                                 val languageSpecificName = when (userLanguage) {
@@ -547,7 +550,11 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
                                                 }
 
                                                 // Create a combined name with both English and language-specific names
-                                                val combinedName = "$englishName / $languageSpecificName"
+                                                val combinedName = if (userLanguage == "english") {
+                                                    englishName
+                                                } else {
+                                                    "$englishName / $languageSpecificName"
+                                                }
 
                                                 // Add the combined name to the foodName list
                                                 it.foodName = arrayListOf(combinedName)
@@ -558,7 +565,7 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
                                         }
 
                                         if (!::adapter.isInitialized) {
-                                            adapter = NearItemAdapter(menuItems, cartItems,requireContext())
+                                            adapter = NearItemAdapter(menuItems, cartItems, requireContext())
                                             binding.Nearitemrecycler.adapter = adapter
                                         } else {
                                             adapter.notifyDataSetChanged()
@@ -605,10 +612,19 @@ class HomeFragment : Fragment(), ExploreShopAdapter.OnItemClickListener {
                                                     "tamil" -> foodNamesList.getOrNull(1) ?: ""
                                                     "malayalam" -> foodNamesList.getOrNull(2) ?: ""
                                                     "telugu" -> foodNamesList.getOrNull(3) ?: ""
-                                                    else -> englishName
+                                                    else -> englishName // Default to English
                                                 }
-                                                val combinedName = "$englishName / $languageSpecificName"
+
+                                                // Create a combined name with both English and language-specific names
+                                                val combinedName = if (userLanguage == "english") {
+                                                    englishName
+                                                } else {
+                                                    "$englishName / $languageSpecificName"
+                                                }
+
+                                                // Add the combined name to the foodName list
                                                 it.foodName = arrayListOf(combinedName)
+
                                                 menuItems.add(it)
                                             }
                                         }

@@ -51,7 +51,8 @@ class SearchViewModel : ViewModel() {
                                                             itemSnapshot.getValue(MenuItem::class.java)
                                                         menuItem?.let {
                                                             // Retrieve the foodNames in English and user-selected language
-                                                            val foodNamesList = it.foodName ?: arrayListOf("", "", "", "")
+
+                                                            val foodNamesList = it.foodName ?: arrayListOf()
                                                             val englishName = foodNamesList.getOrNull(0) ?: ""
                                                             val languageSpecificName = when (userLanguage) {
                                                                 "tamil" -> foodNamesList.getOrNull(1) ?: ""
@@ -61,12 +62,14 @@ class SearchViewModel : ViewModel() {
                                                             }
 
                                                             // Create a combined name with both English and language-specific names
-                                                            val combinedName =
+                                                            val combinedName = if (userLanguage == "english") {
+                                                                englishName
+                                                            } else {
                                                                 "$englishName / $languageSpecificName"
+                                                            }
 
-                                                            // Update the foodName list in MenuItem
+                                                            // Add the combined name to the foodName list
                                                             it.foodName = arrayListOf(combinedName)
-
                                                             // Add the menuItem to the list
                                                             menuItems.add(it)
                                                         }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.capztone.seafishfy.databinding.FragmentAddressBinding
 import com.capztone.seafishfy.ui.activities.ManualLocation
 import com.capztone.seafishfy.ui.activities.adapters.AddressAdapter
+import com.capztone.seafishfy.ui.activities.models.Address
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -25,6 +26,16 @@ class AddressFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
     private lateinit var addressAdapter: AddressAdapter
     private var selectedAddress: String? = null
+    interface AddressSelectionListener {
+        fun onAddressSelected(address: String)
+    }
+
+    private var listener: AddressSelectionListener? = null
+
+    fun setAddressSelectionListener(listener: AddressSelectionListener) {
+        this.listener = listener
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,13 +48,13 @@ class AddressFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize AddressAdapter
-        addressAdapter = AddressAdapter { address ->
+        addressAdapter = AddressAdapter() { address ->
             selectedAddress = address.toString()
         }
         activity?.window?.let { window ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                window.statusBarColor = android.graphics.Color.TRANSPARENT
+                window.statusBarColor = android.graphics.Color.WHITE
             }
         }
 
@@ -52,9 +63,6 @@ class AddressFragment : BottomSheetDialogFragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = addressAdapter
         }
-        binding.detailGoToBackImageButton.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
 
         // Handle click on new_address RelativeLayout
         binding.newAddress.setOnClickListener {
@@ -62,13 +70,29 @@ class AddressFragment : BottomSheetDialogFragment() {
             startActivity(Intent(context, ManualLocation::class.java))
         }
         // Handle click on Address_comfirm button
+        // Handle click on Address_confirm button
         binding.AddressComfirm.setOnClickListener {
-            selectedAddress?.let { address ->
-                storeAddressInFirebase(address)
-            } ?: run {
-                // Handle case where no address is selected
-                Toast.makeText(context, "Please select an address", Toast.LENGTH_SHORT).show()
+            // Check if selectedAddress is null or empty
+            if (selectedAddress.isNullOrEmpty()) {
+                // Retrieve the address at position 0 if available
+                val firstAddress = addressAdapter.getFirstAddress()
+                if (firstAddress != null) {
+                    storeAddressInFirebase(firstAddress.address)
+                } else {
+                    Toast.makeText(context, "Please select an address", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                // Store the selected address in Firebase
+                storeAddressInFirebase(selectedAddress!!)
             }
+        }
+    }
+    // Helper function to get the address at position 0 from adapter
+    private fun AddressAdapter.getFirstAddress(): Address? {
+        return if (addresses.isNotEmpty()) {
+            addresses[0]
+        } else {
+            null
         }
     }
     private fun storeAddressInFirebase(address: String) {

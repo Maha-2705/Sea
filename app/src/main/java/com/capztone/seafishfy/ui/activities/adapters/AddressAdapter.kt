@@ -17,7 +17,7 @@ import com.google.firebase.database.*
 
 class AddressAdapter(private val onItemClick: (String) -> Unit) : RecyclerView.Adapter<AddressAdapter.AddressViewHolder>() {
 
-    private val addresses = mutableListOf<Address>()
+    val addresses = mutableListOf<Address>()
     private val userId = FirebaseAuth.getInstance().currentUser?.uid
     private val database: DatabaseReference? =
         userId?.let { FirebaseDatabase.getInstance().getReference("Locations").child(it) }

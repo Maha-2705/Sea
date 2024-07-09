@@ -88,7 +88,6 @@ class ShopOneViewModel : ViewModel() {
                 menuItem?.let {
 
                     it.path = shopName
-
                     val foodNamesList = it.foodName ?: arrayListOf()
                     val englishName = foodNamesList.getOrNull(0) ?: ""
                     val languageSpecificName = when (userLanguage) {
@@ -97,9 +96,16 @@ class ShopOneViewModel : ViewModel() {
                         "telugu" -> foodNamesList.getOrNull(3) ?: ""
                         else -> englishName // Default to English
                     }
-                    val combinedName = "$englishName / $languageSpecificName"
-                    it.foodName = arrayListOf(combinedName)
 
+                    // Create a combined name with both English and language-specific names
+                    val combinedName = if (userLanguage == "english") {
+                        englishName
+                    } else {
+                        "$englishName / $languageSpecificName"
+                    }
+
+                    // Add the combined name to the foodName list
+                    it.foodName = arrayListOf(combinedName)
                     menuItems.add(it)
                 }
             }

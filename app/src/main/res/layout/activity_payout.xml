@@ -1,456 +1,473 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/lblue"
-        android:orientation="vertical"
-        tools:context=".ui.activities.PayoutActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lblue"
+    android:orientation="vertical"
+    tools:context=".ui.activities.PayoutActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="20sp"
+            android:background="@drawable/shape"
+            android:text="Check out"
+            android:textFontWeight="600"
+            android:textColor="@color/white"
+            android:paddingStart="50dp"
+            android:paddingTop="30dp"
+            android:fontFamily="@font/robo_font"
+            android:layout_marginBottom="20dp"
+            android:lineHeight="20px"/>
+        <ImageView
+            android:id="@+id/recentBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="33dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow_left1"
+            android:contentDescription="@string/image_desc_text" />
+
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="30dp">
+            android:id="@+id/first"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:cardCornerRadius="5dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/cardstroke"
+            android:layout_marginEnd="10dp"
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="75dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textSize="20sp"
-                android:background="@drawable/shape"
-                android:text="Check out"
-                android:textFontWeight="600"
-                android:textColor="@color/white"
-                android:paddingStart="21dp"
-                android:paddingTop="30dp"
-                android:fontFamily="@font/robo_font"
-                android:layout_marginBottom="20dp"
-                android:lineHeight="20px"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="90dp">
 
-            <androidx.cardview.widget.CardView
+
+            <LinearLayout
+                android:id="@+id/card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/first"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:cardCornerRadius="5dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/cardstroke"
-                android:layout_marginEnd="10dp"
-
+                android:background="@color/white"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="90dp">
+
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="start">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/robo_font"
+                        android:text="Shipping To"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/navy"
+                        android:textFontWeight="800"
+                        android:textSize="18sp"
+                        android:gravity="center_vertical" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/address"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:src="@drawable/editpro"
+                        android:onClick="showPopupMenu" />
+
+                    <TextView
+                        android:id="@+id/changeAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edit"
+                        android:layout_marginEnd="30dp"
+                        android:textColor="@color/navy"
+                        android:textFontWeight="600"
+                        android:fontFamily="@font/roboto"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="4dp" />
+                </LinearLayout>
+
 
 
                 <LinearLayout
-                    android:id="@+id/card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/white"
-                    app:layout_constraintTop_toTopOf="parent"
-
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:fontFamily="@font/robo_font"
-                            android:text="Shipping To"
-                            android:layout_gravity="center"
-                            android:textColor="@color/navy"
-                            android:textFontWeight="800"
-                            android:textSize="18sp"
-                            />
-
-                        <ImageView
-                            android:id="@+id/address"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginStart="160dp"
-                            android:layout_gravity="center"
-                            android:clickable="true"
-                            android:src="@drawable/editpro"
-                            android:onClick="showPopupMenu" />
-
-                        <TextView
-                            android:id="@+id/changeAddress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Edit"
-                            android:paddingTop="2dp"
-                            android:textColor="@color/navy"
-                            android:textFontWeight="600"
-                            android:fontFamily="@font/roboto"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="25dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        >
-
-                    </LinearLayout>
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginBottom="20dp"
-
-                        android:background="@drawable/cardstroke"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="5dp">
-
-                        <TextView
-                            android:id="@+id/payoutAddress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-
-                            android:ems="10"
-                            android:fontFamily="@font/roboto"
-                            android:hint="Select Address"
-                            android:padding="5dp"
-                            android:paddingStart="10dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/ThickAsh"
-                            android:textSize="16sp"
-                            app:layout_constraintEnd_toStartOf="@id/changeAddress"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:ignore="NotSibling" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+                    android:orientation="horizontal"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    >
 
                 </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-            <TextView
-                android:id="@+id/slotHead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="15dp"
-                app:layout_constraintTop_toBottomOf="@id/first"
-                android:textSize="18sp"
-                android:text="Select Delivery Slot Option"
-                android:textFontWeight="800"
-                android:textColor="@color/navy"
-                android:fontFamily="@font/robo_font"
-                android:layout_marginTop="20dp"
-                android:lineHeight="20px"/>
-
-            <LinearLayout
-                android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="10dp"
-                android:padding="10dp"
-                android:background="@drawable/cardstroke"
-                app:layout_constraintTop_toBottomOf="@id/slotHead"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
-                >
-
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:ems="9"
-                    android:fontFamily="@font/robo_font"
-                    android:textColorHint="@color/ThickAsh"
-                    android:hint="Select Delivery Time Slot"
-                    android:inputType="text"
-                    android:textSize="15sp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:id="@+id/Slot"
-                    android:textColor="@color/black" />
-                <ImageView
-                    android:id="@+id/slotdrop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:clickable="true"
-                    android:layout_marginEnd="13dp"
-                    android:onClick="showPopupMenu"
-                    android:src="@drawable/drop" />
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="20dp"
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:id="@+id/total"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_aboutus"
+                    android:background="@drawable/cardstroke"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="5dp">
 
-                android:layout_marginBottom="20dp"
-                >
+                    <TextView
+                        android:id="@+id/payoutAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:textFontWeight="800"
-                    android:paddingStart="10dp"
-                    android:fontFamily="@font/robo_font"
-                    android:text="Total Amount"
-                    android:textColor="@color/black"
-                    android:textSize="17sp" />
+                        android:ems="10"
+                        android:fontFamily="@font/roboto"
+                        android:hint="Select Address"
+                        android:padding="5dp"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/ThickAsh"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toStartOf="@id/changeAddress"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="NotSibling" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:ems="10"
-                    android:fontFamily="@font/robo_font"
-                    android:text="300 ₹"
-                    android:lineHeight="30px"
-                    android:inputType="text"
-                    android:textSize="17sp"
-                    android:gravity="center"
 
-                    android:id="@+id/amountTotal"
-                    android:textColor="@color/black" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
             </LinearLayout>
 
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/slotHead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/first"
+            android:textSize="18sp"
+            android:text="Select Delivery Slot Option"
+            android:textFontWeight="800"
+            android:textColor="@color/navy"
+            android:fontFamily="@font/robo_font"
+            android:layout_marginTop="20dp"
+            android:lineHeight="20px"/>
+
+        <LinearLayout
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:padding="10dp"
+            android:background="@drawable/cardstroke"
+            app:layout_constraintTop_toBottomOf="@id/slotHead"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            >
+
 
             <TextView
-                android:id="@+id/payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="15dp"
-                app:layout_constraintTop_toBottomOf="@id/time"
-                android:textSize="18sp"
-                android:text="Payment Method"
-                android:textFontWeight="800"
-                android:textColor="@color/navy"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:ems="9"
                 android:fontFamily="@font/robo_font"
-                android:layout_marginTop="20dp"
-                android:lineHeight="20px"/>
-
-            <RelativeLayout
-                android:id="@+id/container_profile"
-                android:layout_width="match_parent"
+                android:textColorHint="@color/ThickAsh"
+                android:hint="Select Delivery Time Slot"
+                android:inputType="text"
+                android:textSize="15sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:id="@+id/Slot"
+                android:textColor="@color/black" />
+            <ImageView
+                android:id="@+id/slotdrop"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cardradius"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@id/payment"
-                android:padding="12dp">
-
-                <ImageView
-                    android:id="@+id/image_location"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_profile"
-                    android:padding="8dp"
-                    android:src="@drawable/gpay"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="12dp"
-                    android:layout_toEndOf="@id/image_location"
-                    android:fontFamily="@font/robo_font"
-                    android:textFontWeight="400"
-                    android:lineHeight="10px"
-                    android:text="Google Pay"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    tools:ignore="RelativeOverlap" />
-
-
-                <RadioButton
-                    android:id="@+id/gpay"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:button="@drawable/custome_radiobutton"
-                    android:onClick="onRadioButtonClick"
-                    android:theme="@style/RadioButtonStyle"
-
-                    />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/container_orders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-
-                app:layout_constraintTop_toBottomOf="@id/container_profile"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/cardradius"
-                android:padding="12dp">
-
-                <ImageView
-                    android:id="@+id/image_settings"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_profile"
-                    android:padding="12dp"
-                    android:src="@drawable/paytm"
-
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="12dp"
-                    android:layout_toEndOf="@id/image_settings"
-                    android:fontFamily="@font/robo_font"
-                    android:textFontWeight="400"
-                    android:lineHeight="10px"
-                    android:text="Paytm"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    tools:ignore="RelativeOverlap" />
-
-
-                <RadioButton
-                    android:id="@+id/paytm"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:button="@drawable/custome_radiobutton"
-                    android:onClick="onRadioButtonClick"
-                    android:theme="@style/RadioButtonStyle"
-                    android:layout_centerVertical="true"
-                    />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/container_aboutus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                app:layout_constraintTop_toBottomOf="@id/container_orders"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/cardradius"
-                android:padding="12dp">
-
-                <ImageView
-                    android:id="@+id/image_service"
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_profile"
-                    android:padding="8dp"
-                    android:src="@drawable/phonepe"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="12dp"
-                    android:layout_toEndOf="@id/image_service"
-                    android:fontFamily="@font/robo_font"
-                    android:textFontWeight="400"
-                    android:lineHeight="10px"
-                    android:text="PhonePe"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    tools:ignore="RelativeOverlap" />
-
-
-                <RadioButton
-                    android:id="@+id/phonepe"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:button="@drawable/custome_radiobutton"
-                    android:onClick="onRadioButtonClick"
-                    android:theme="@style/RadioButtonStyle"
-                    />
-            </RelativeLayout>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/placeMyOrderButton"
-                android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/profile_edit_text"
-                android:elevation="5dp"
-                android:fontFamily="@font/robo_font"
-                android:text="Make payment"
-                android:textFontWeight="500"
-                android:lineHeight="20px"
-                android:textAllCaps="false"
-                android:textColor="@color/navy"
-                android:textSize="20sp"
-                app:layout_constraintTop_toBottomOf="@id/total"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-            <LinearLayout
-                android:id="@+id/pathContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="20dp">
+                app:layout_constraintStart_toStartOf="parent"
+                android:clickable="true"
+                android:layout_marginEnd="13dp"
+                android:onClick="showPopupMenu"
+                android:src="@drawable/drop" />
 
-            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:id="@+id/total"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container_aboutus"
+
+            android:layout_marginBottom="20dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:textFontWeight="800"
+                android:paddingStart="10dp"
+                android:fontFamily="@font/robo_font"
+                android:text="Total Amount"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:ems="10"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 android:fontFamily="@font/robo_font"
                 android:text="300 ₹"
                 android:lineHeight="30px"
                 android:inputType="text"
-                android:visibility="invisible"
                 android:textSize="17sp"
-                android:paddingStart="100dp"
-                android:id="@+id/payoutTotalAmount"
-                android:textColor="@color/black"/>
+                android:gravity="center"
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+                android:id="@+id/amountTotal"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/time"
+            android:textSize="18sp"
+            android:text="Payment Method"
+            android:textFontWeight="800"
+            android:textColor="@color/navy"
+            android:fontFamily="@font/robo_font"
+            android:layout_marginTop="20dp"
+            android:lineHeight="20px"/>
+
+        <RelativeLayout
+            android:id="@+id/container_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cardradius"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/payment"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/image_location"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_profile"
+                android:padding="8dp"
+                android:src="@drawable/gpay"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@id/image_location"
+                android:fontFamily="@font/robo_font"
+                android:textFontWeight="400"
+                android:lineHeight="10px"
+                android:text="Google Pay"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:ignore="RelativeOverlap" />
+
+
+            <RadioButton
+                android:id="@+id/gpay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/custome_radiobutton"
+                android:onClick="onRadioButtonClick"
+                android:theme="@style/RadioButtonStyle"
+
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_orders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+
+            app:layout_constraintTop_toBottomOf="@id/container_profile"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/cardradius"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/image_settings"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_profile"
+                android:padding="12dp"
+                android:src="@drawable/paytm"
+
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@id/image_settings"
+                android:fontFamily="@font/robo_font"
+                android:textFontWeight="400"
+                android:lineHeight="10px"
+                android:text="Paytm"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:ignore="RelativeOverlap" />
+
+
+            <RadioButton
+                android:id="@+id/paytm"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:button="@drawable/custome_radiobutton"
+                android:onClick="onRadioButtonClick"
+                android:theme="@style/RadioButtonStyle"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_aboutus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            app:layout_constraintTop_toBottomOf="@id/container_orders"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/cardradius"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/image_service"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_profile"
+                android:padding="8dp"
+                android:src="@drawable/phonepe"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@id/image_service"
+                android:fontFamily="@font/robo_font"
+                android:textFontWeight="400"
+                android:lineHeight="10px"
+                android:text="PhonePe"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+
+            <RadioButton
+                android:id="@+id/phonepe"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:button="@drawable/custome_radiobutton"
+                android:onClick="onRadioButtonClick"
+                android:theme="@style/RadioButtonStyle"
+                />
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/placeMyOrderButton"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/profile_edit_text"
+            android:elevation="5dp"
+            android:fontFamily="@font/robo_font"
+            android:text="Make payment"
+            android:textFontWeight="500"
+            android:lineHeight="20px"
+            android:textAllCaps="false"
+            android:textColor="@color/navy"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/total"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:id="@+id/pathContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="20dp">
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:fontFamily="@font/robo_font"
+            android:text="300 ₹"
+            android:lineHeight="30px"
+            android:inputType="text"
+            android:visibility="invisible"
+            android:textSize="17sp"
+            android:paddingStart="100dp"
+            android:id="@+id/payoutTotalAmount"
+            android:textColor="@color/black"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

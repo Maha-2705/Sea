@@ -40,7 +40,7 @@
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:fontFamily="@font/roboto" />
-            <Button
+                <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/shopnow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
