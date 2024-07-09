@@ -27,6 +27,18 @@ class ShopOneViewModel : ViewModel() {
     val menu2Items: LiveData<List<MenuItem>>
         get() = _menu2Items
 
+    private val _menu3Items = MutableLiveData<List<MenuItem>>()
+    val menu3Items: LiveData<List<MenuItem>>
+        get() = _menu3Items
+
+    private val _menu4Items = MutableLiveData<List<MenuItem>>()
+    val menu4Items: LiveData<List<MenuItem>>
+        get() = _menu4Items
+
+    private val _menu5Items = MutableLiveData<List<MenuItem>>()
+    val menu5Items: LiveData<List<MenuItem>>
+        get() = _menu5Items
+
     private val _discountItems = MutableLiveData<List<DiscountItem>>()
     val discountItems: LiveData<List<DiscountItem>>
         get() = _discountItems
@@ -53,6 +65,9 @@ class ShopOneViewModel : ViewModel() {
                 retrieveMenuItems(shopRef.child("menu"), _menuItems, userLanguage,shopName)
                 retrieveMenuItems(shopRef.child("menu1"), _menu1Items, userLanguage,shopName)
                 retrieveMenuItems(shopRef.child("menu2"), _menu2Items, userLanguage,shopName)
+                retrieveMenuItems(shopRef.child("menu4"), _menu3Items, userLanguage,shopName)
+                retrieveMenuItems(shopRef.child("menu3"), _menu4Items, userLanguage,shopName)
+                retrieveMenuItems(shopRef.child("menu5"), _menu5Items, userLanguage,shopName)
                 retrieveDiscountItems(shopRef.child("discount"),_discountItems,userLanguage,shopName)
             }
         } catch (e: Exception) {

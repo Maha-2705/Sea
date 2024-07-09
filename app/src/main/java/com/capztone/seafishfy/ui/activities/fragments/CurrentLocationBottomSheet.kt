@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -124,11 +125,7 @@ class CurrentLocationBottomSheet : DialogFragment() {
     }
 
     private fun calculateDistances() {
-        val addressString = "${binding.etBuildingName.text}, " +
-                "${binding.etHouseFlatNo.text}, " +
-                "${binding.etStreet.text}, " +
-                "${binding.etLocality.text} - " +
-                "${binding.etPincode.text}"
+        val addressString = "${binding.etBuildingName.text}, "
 
         try {
             // Use Geocoder to get latitude and longitude from address
@@ -217,66 +214,64 @@ class CurrentLocationBottomSheet : DialogFragment() {
         button.compoundDrawablesRelative.forEach { it?.setTint(ContextCompat.getColor( requireContext(), color)) }
     }
     private fun validateInput(): Boolean {
-        return when {
-            TextUtils.isEmpty(binding.etName.text.toString().trim()) -> {
-                binding.etName.error = "Name is required"
-                false
-            }
-            binding.etName.text.toString().trim().length < 3 -> {
-                binding.etName.error = "Name must be at least 3 characters"
-                false
-            }
-            binding.etName.text.toString().trim().length > 10 -> {
-                binding.etName.error = "Name must be at most 10 characters"
-                false
-            }
-            TextUtils.isEmpty(binding.etMobileNumber.text.toString().trim()) -> {
-                binding.etMobileNumber.error = "Mobile number is required"
-                false
-            }
-            binding.etMobileNumber.text.toString().trim().length != 10 -> {
-                binding.etMobileNumber.error = "Mobile number must be 10 digits"
-                false
-            }
-            TextUtils.isEmpty(binding.etHouseFlatNo.text.toString().trim()) -> {
-                binding.etHouseFlatNo.error = "House/Flat No is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etBuildingName.text.toString().trim()) -> {
-                binding.etBuildingName.error = "Building name is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etStreet.text.toString().trim()) -> {
-                binding.etStreet.error = "Street name is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etPincode.text.toString().trim()) -> {
-                binding.etPincode.error = "Pincode is required"
-                false
-            }
-            binding.etPincode.text.toString().trim().length != 6 || !binding.etPincode.text.toString().trim().matches("\\d{6}".toRegex()) -> {
-                binding.etPincode.error = "Pincode must be a 6-digit numeric value"
-                false
-            }
-            TextUtils.isEmpty(binding.etLocality.text.toString().trim()) -> {
-                binding.etLocality.error = "Locality is required"
-                false
-            }
-            else -> true
+        var isValid = true
+
+
+        // Validate Name
+        val name = binding.etName.text.toString().trim()
+        if (TextUtils.isEmpty(name)) {
+            binding.etName.error = "Name is required"
+            setMandatoryFieldIndicatorVisible(true, "NAME *", binding.name)
+            isValid = false
+        } else if (name.length !in 3..10) {
+            binding.etName.error = "Name must be between 3 and 10 characters"
+            setMandatoryFieldIndicatorVisible(true, "NAME *", binding.name)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "NAME *", binding.name)
         }
+
+        // Validate Mobile Number
+        val mobileNumber = binding.etMobileNumber.text.toString().trim()
+        if (TextUtils.isEmpty(mobileNumber)) {
+            binding.etMobileNumber.error = "Mobile number is required"
+            setMandatoryFieldIndicatorVisible(true, "MOBILE NUMBER *", binding.mblnum)
+            isValid = false
+        } else if (mobileNumber.length != 10) {
+            binding.etMobileNumber.error = "Mobile number must be 10 digits"
+            setMandatoryFieldIndicatorVisible(true, "MOBILE NUMBER *", binding.mblnum)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "MOBILE NUMBER *", binding.mblnum)
+        }
+        val address = binding.etBuildingName.text.toString().trim()
+        if (TextUtils.isEmpty(address)) {
+            binding.etBuildingName.error = "Address is required"
+            setMandatoryFieldIndicatorVisible(true, "ADDRESS *", binding.Address)
+            isValid = false
+        }
+        // Validate City (Locality)
+
+
+        // Validate Pincode
+
+        return isValid
     }
 
-
+    private fun setMandatoryFieldIndicatorVisible(visible: Boolean, text: String, textView: TextView) {
+        if (visible) {
+            textView.visibility = View.VISIBLE
+            textView.text = text  // Change text dynamically
+        } else {
+            textView.visibility = View.GONE
+        }
+    }
     private fun saveAddressToFirebase() {
         val userId = auth.currentUser?.uid ?: return
 
         val addressString = "${binding.etName.text.toString().trim()},\n" +
-                "${binding.etHouseFlatNo.text.toString().trim()}, " +
-                "${binding.etStreet.text.toString().trim()}, " +
                 "${binding.etBuildingName.text.toString().trim()}\n" +
-                "${binding.etLocality.text.toString().trim()} - " +
-                "${binding.etPincode.text.toString().trim()},\n" +
-        "${binding.etMobileNumber.text.toString().trim()} "
+                "${binding.etMobileNumber.text.toString().trim()} "
 
         try {
             // Use Geocoder to get latitude and longitude from address
@@ -284,6 +279,8 @@ class CurrentLocationBottomSheet : DialogFragment() {
             if (addresses != null && addresses.isNotEmpty()) {
                 val latitude = addresses[0].latitude
                 val longitude = addresses[0].longitude
+                // Extract locality from the geocoded address
+                val locality = addresses[0].locality
 
                 // Check if the distance to any shop location is greater than 10 kilometers
                 var addressWithinThreshold = false
@@ -324,6 +321,7 @@ class CurrentLocationBottomSheet : DialogFragment() {
                     locationData["latitude"] = latitude
                     locationData["longitude"] = longitude
 
+
                     if (nearbyShops.isNotEmpty()) {
                         locationData["shopname"] = shopsWithinThreshold
                     } else {
@@ -346,14 +344,36 @@ class CurrentLocationBottomSheet : DialogFragment() {
                             }
                     }
 
-                    // Store the locality directly inside Locations -> userId
-                    val locality = binding.etLocality.text.toString().trim()
                     database.child("Locations").child(userId).child("locality").setValue(locality)
                         .addOnCompleteListener { localitySaveTask ->
                             if (!localitySaveTask.isSuccessful) {
                                 Toast.makeText(
                                     requireContext(),
                                     "Failed to save locality: ${localitySaveTask.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    // Store latitude and longitude under Locations -> userId
+                    val locationRef = database.child("Locations").child(userId)
+                    locationRef.child("latitude").setValue(latitude)
+                        .addOnCompleteListener { latitudeSaveTask ->
+                            if (!latitudeSaveTask.isSuccessful) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Failed to save latitude: ${latitudeSaveTask.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    locationRef.child("longitude").setValue(longitude)
+                        .addOnCompleteListener { longitudeSaveTask ->
+                            if (!longitudeSaveTask.isSuccessful) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Failed to save longitude: ${longitudeSaveTask.exception?.message}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

@@ -75,9 +75,10 @@
                 android:orientation="vertical"
                 android:layout_marginTop="16dp">
                 <TextView
+                    android:id="@+id/Address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="BUILDING NAME"
+                    android:text="Address"
                     android:textColor="@color/navy"
                     android:textSize="14sp"
                     android:fontFamily="@font/roboto"
@@ -86,7 +87,7 @@
                     android:id="@+id/et_building_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Building Name"
+                    android:hint="Address"
                     android:inputType="text"
                     android:maxLines="1"
                     android:fontFamily="@font/roboto"
@@ -107,6 +108,7 @@
                 android:layout_marginTop="12dp">
                 <TextView
                     android:layout_width="match_parent"
+                    android:id="@+id/name"
                     android:layout_height="wrap_content"
                     android:text="NAME"
                     android:textColor="@color/navy"
@@ -136,6 +138,7 @@
                 android:orientation="vertical"
                 android:layout_marginTop="12dp">
                 <TextView
+                    android:id="@+id/mblnum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="MOBILE NUMBER"
@@ -158,123 +161,7 @@
                     android:lineHeight="1dp"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/house"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="HOUSE/FLOT NO"
-                    android:textColor="@color/navy"
 
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp"/>
-                <EditText
-                    android:id="@+id/et_house_flat_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="House/Flat No"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/streetname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="STREET NAME"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_street"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Street"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/Pincode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="PINCODE"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_pincode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Pincode"
-                    android:inputType="number"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/locality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="LOCALITY"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_locality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Locality"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

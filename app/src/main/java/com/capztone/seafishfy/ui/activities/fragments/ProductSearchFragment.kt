@@ -47,7 +47,7 @@ class ProductSearchFragment : Fragment() {
     }
 
     private fun setupRecyclerView(menuItems: List<MenuItem>) {
-        adapter = SearchAdapter(menuItems,requireContext())
+        adapter = SearchAdapter(menuItems,requireContext(),binding.noResultsTextView)
         binding.menuRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.menuRecyclerView.adapter = adapter
     }

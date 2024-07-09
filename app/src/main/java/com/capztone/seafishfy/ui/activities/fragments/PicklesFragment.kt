@@ -8,13 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.capztone.seafishfy.databinding.FragmentPicklesBinding
-import com.capztone.seafishfy.databinding.FragmentSearchBinding
 import com.capztone.seafishfy.ui.activities.MainActivity
-import com.capztone.seafishfy.ui.activities.ViewModel.FreshFishViewModel
 import com.capztone.seafishfy.ui.activities.ViewModel.PicklesViewModel
-import com.capztone.seafishfy.ui.activities.adapters.SearchAdapter
 import com.capztone.seafishfy.ui.activities.models.MenuItem
-import com.capztone.seafishfy.ui.activities.ViewModel.SearchViewModel
 import com.capztone.seafishfy.ui.activities.adapters.FreshFishAdapter
 import com.capztone.seafishfy.ui.activities.adapters.NearItemAdapter
 

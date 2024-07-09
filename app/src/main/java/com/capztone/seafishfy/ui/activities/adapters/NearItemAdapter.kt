@@ -354,6 +354,63 @@ class NearItemAdapter(
         }
 
         private fun addItemToCart1() {
+            val currentShopName = binding.shopname.text.toString()
+            val cartItemsRef = currentUserID?.let {
+                FirebaseDatabase.getInstance().reference.child("user").child(it).child("cartItems")
+            }
+
+            if (cartItemsRef != null) {
+                cartItemsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        var differentShopFound = false
+
+                        for (itemSnapshot in dataSnapshot.children) {
+                            val shopName = itemSnapshot.child("path").value as String
+                            if (shopName != currentShopName) {
+                                differentShopFound = true
+                                break
+                            }
+                        }
+
+                        if (differentShopFound) {
+                            val context = binding.root.context
+                            val layoutInflater = LayoutInflater.from(context)
+                            val customLayout = layoutInflater.inflate(R.layout.shop_dialog, null)
+
+                            val dialog = AlertDialog.Builder(context, R.style.CustomDialogg)
+                                .setView(customLayout)
+                                .create()
+
+                            // Set background to transparent
+                            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                            val positiveButton = customLayout.findViewById<AppCompatButton>(R.id.dialog_positive_button)
+                            val negativeButton = customLayout.findViewById<AppCompatButton>(R.id.dialog_negative_button)
+
+                            positiveButton.setOnClickListener {
+                                cartItemsRef.removeValue().addOnSuccessListener {
+                                    addItemToCartWithoutCheck1()
+                                    dialog.dismiss()
+                                }
+                            }
+
+                            negativeButton.setOnClickListener {
+                                dialog.dismiss()
+                            }
+
+                            dialog.show()
+                        } else {
+                            addItemToCartWithoutCheck()
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle error
+                    }
+                })
+            }
+        }
+        private fun addItemToCartWithoutCheck1() {
             val database = FirebaseDatabase.getInstance().reference
             val userId = FirebaseAuth.getInstance().currentUser?.uid
             val shopName = binding.shopname.text.toString()
@@ -389,8 +446,31 @@ class NearItemAdapter(
                                             )
                                         }
                                 }
-                            }
+                            } else {
+                                // Item not in cart, add new item
 
+                                val cartItem = CartItems(
+                                    shopName,
+                                    foodName,
+                                    foodPrice,
+                                    foodDescription,
+                                    foodImage,
+                                    quantity
+                                )
+                                cartItemsRef.push().setValue(cartItem)
+                                    .addOnSuccessListener {
+                                        ToastHelper.showCustomToast(
+                                            context,
+                                            "Item added to cart successfully"
+                                        )
+                                    }
+                                    .addOnFailureListener {
+                                        ToastHelper.showCustomToast(
+                                            context,
+                                            "Failed to add item to cart"
+                                        )
+                                    }
+                            }
                         }
 
                         override fun onCancelled(databaseError: DatabaseError) {
@@ -400,6 +480,7 @@ class NearItemAdapter(
             }
         }
 
+
         fun bind(menuItem: MenuItem, cartItem: CartItems?) {
             binding.menuFoodName1.text = menuItem.foodName?.getOrNull(0) ?: ""
             binding.menuFoodName2.text = menuItem.foodName?.getOrNull(1) ?: ""
@@ -408,6 +489,9 @@ class NearItemAdapter(
             foodDescription = menuItem.foodDescription
 
             binding.shopname.text = menuItem.path ?: ""
+            binding.Qty.text=menuItem.productQuantity
+            binding.fav.setImageResource(if (menuItem.favorite) R.drawable.baseline_favorite_24 else R.drawable.favourite)
+
 
             Glide.with(binding.root.context)
                 .load(menuItem.foodImage)
@@ -456,6 +540,10 @@ class NearItemAdapter(
             quantityLiveData.observeForever { quantity ->
                 updateQuantityText(quantity)
             }
+            binding.fav.setOnClickListener {
+                toggleFavorite(adapterPosition)
+            }
+
 
             binding.root.setOnClickListener {
                 val position = adapterPosition
@@ -478,8 +566,19 @@ class NearItemAdapter(
             quantityLiveData.removeObservers(itemView.context as LifecycleOwner)
         }
     }
+    private fun openDetailsActivity(view: View, position: Int) {
+        val menuItem = menuItems[position]
+        val bundle = Bundle().apply {
+            putString("MenuItemName", menuItem.foodName?.getOrNull(0) ?: "")
+            putString("MenuItemPrice", menuItem.foodPrice)
+            putString("MenuItemDescription", menuItem.foodDescription)
+            putString("MenuItemImage", menuItem.foodImage)
+            putString("MenuQuantity", menuItem.productQuantity)
+        }
 
-
+        // Navigate to the details fragment using NavController
+        view.findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
+    }
     private fun toggleFavorite(position: Int) {
         val menuItem = menuItems[position]
         menuItem.favorite = !menuItem.favorite
@@ -498,21 +597,6 @@ class NearItemAdapter(
         }
         sharedPreferences.edit().putStringSet(favoriteItemsKey, favoritesSet).apply()
     }
-
-    private fun openDetailsActivity(view: View, position: Int) {
-        val menuItem = menuItems[position]
-        val bundle = Bundle().apply {
-            putString("MenuItemName", menuItem.foodName?.getOrNull(0) ?: "")
-            putString("MenuItemPrice", menuItem.foodPrice)
-            putString("MenuItemDescription", menuItem.foodDescription)
-            putString("MenuItemImage", menuItem.foodImage)
-            putString("MenuQuantity", menuItem.productQuantity)
-        }
-
-        // Navigate to the details fragment using NavController
-        view.findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
-    }
-
     private fun updateFavoriteStateInFirebase(menuItem: MenuItem) {
         val currentUserID = FirebaseAuth.getInstance().currentUser?.uid
         currentUserID?.let { userId ->

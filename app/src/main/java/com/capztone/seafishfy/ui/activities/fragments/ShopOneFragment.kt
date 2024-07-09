@@ -58,7 +58,11 @@ class ShopOneFragment : Fragment() {
         setupMenuRecyclerView(binding.popularRecyclerView)
         setupMenuRecyclerView(binding.popularRecyclerView1)
         setupMenuRecyclerView(binding.popularRecyclerView3)
-        setupDiscountRecyclerView(binding.discountRecyclerView)
+        setupMenuRecyclerView(binding.crabRecycler)
+        setupMenuRecyclerView(binding.shrimpRecycler)
+        setupMenuRecyclerView(binding.lobsterRecycler)
+
+
 
         observeViewModel()
     }
@@ -84,10 +88,17 @@ class ShopOneFragment : Fragment() {
         viewModel.menu2Items.observe(viewLifecycleOwner) { items ->
             setMenuAdapter(items, binding.popularRecyclerView3)
         }
-
-        viewModel.discountItems.observe(viewLifecycleOwner) { items ->
-            setDiscountAdapter(items)
+        viewModel.menu3Items.observe(viewLifecycleOwner) { items ->
+            setMenuAdapter(items, binding.crabRecycler)
         }
+        viewModel.menu4Items.observe(viewLifecycleOwner) { items ->
+            setMenuAdapter(items, binding.shrimpRecycler)
+        }
+        viewModel.menu5Items.observe(viewLifecycleOwner) { items ->
+            setMenuAdapter(items, binding.lobsterRecycler)
+        }
+
+
     }
 
     private fun setMenuAdapter(menuItems: List<MenuItem>, recyclerView: RecyclerView) {
@@ -95,8 +106,5 @@ class ShopOneFragment : Fragment() {
         recyclerView.adapter = adapter
     }
 
-    private fun setDiscountAdapter(discountItems: List<DiscountItem>) {
-        val adapter = DiscountAdapter(discountItems, requireContext())
-        binding.discountRecyclerView.adapter = adapter
-    }
+
 }

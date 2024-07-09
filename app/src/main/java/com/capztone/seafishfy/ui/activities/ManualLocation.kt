@@ -17,6 +17,7 @@ import java.io.IOException
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -47,7 +48,8 @@ class ManualLocation : AppCompatActivity() {
         binding = ActivityManualLocationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             window.statusBarColor = android.graphics.Color.TRANSPARENT
         }
         auth = FirebaseAuth.getInstance()
@@ -57,19 +59,27 @@ class ManualLocation : AppCompatActivity() {
         fetchShopLocationsFromFirebase()
 
         binding.AddressSave.setOnClickListener {
-            if (validateInput() && selectedAddressType != null) {
-                saveAddressToFirebase()
-                val intent = Intent(this, LanguageActivity::class.java)
-                startActivity(intent)
-
+            if (validateInput()) {
+                if (selectedAddressType != null) {
+                    saveAddressToFirebase()
+                    val intent = Intent(this, LanguageActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Please select an address type",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 Toast.makeText(
                     this,
-                    "Please fill all fields and select an address type",
+                    "Please fill all fields",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
+
 
         binding.btnSaveAsHome.setOnClickListener { onAddressTypeSelected("HOME", it) }
         binding.btnSaveAsWork.setOnClickListener { onAddressTypeSelected("WORK", it) }
@@ -105,9 +115,7 @@ class ManualLocation : AppCompatActivity() {
     }
 
     private fun calculateDistances() {
-        val addressString = "${binding.etBuildingName.text}, " +
-                "${binding.etHouseFlatNo.text}, " +
-                "${binding.etStreet.text}, " +
+        val addressString =
                 "${binding.etLocality.text} - " +
                 "${binding.etPincode.text}"
 
@@ -158,55 +166,70 @@ class ManualLocation : AppCompatActivity() {
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return R * c // Distance in kilometers
     }
-
     private fun validateInput(): Boolean {
-        return when {
-            TextUtils.isEmpty(binding.etName.text.toString().trim()) -> {
-                binding.etName.error = "Name is required"
-                false
-            }
-            binding.etName.text.toString().trim().length < 3 -> {
-                binding.etName.error = "Name must be at least 3 characters"
-                false
-            }
-            binding.etName.text.toString().trim().length > 10 -> {
-                binding.etName.error = "Name must be at most 10 characters"
-                false
-            }
+        var isValid = true
 
-            TextUtils.isEmpty(binding.etMobileNumber.text.toString().trim()) -> {
-                binding.etMobileNumber.error = "Mobile number is required"
-                false
-            }
-            binding.etMobileNumber.text.toString().trim().length != 10 -> {
-                binding.etMobileNumber.error = "Mobile number must be 10 digits"
-                false
-            }
-            TextUtils.isEmpty(binding.etHouseFlatNo.text.toString().trim()) -> {
-                binding.etHouseFlatNo.error = "House/Flat No is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etBuildingName.text.toString().trim()) -> {
-                binding.etBuildingName.error = "Building name is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etStreet.text.toString().trim()) -> {
-                binding.etStreet.error = "Street name is required"
-                false
-            }
-            TextUtils.isEmpty(binding.etPincode.text.toString().trim()) -> {
-                binding.etPincode.error = "Pincode is required"
-                false
-            }
-            binding.etPincode.text.toString().trim().length != 6 || !binding.etPincode.text.toString().trim().matches("\\d{6}".toRegex()) -> {
-                binding.etPincode.error = "Pincode must be a 6-digit numeric value"
-                false
-            }
-            TextUtils.isEmpty(binding.etLocality.text.toString().trim()) -> {
-                binding.etLocality.error = "Locality is required"
-                false
-            }
-            else -> true
+        // Validate Name
+        val name = binding.etName.text.toString().trim()
+        if (TextUtils.isEmpty(name)) {
+            binding.etName.error = "Name is required"
+            setMandatoryFieldIndicatorVisible(true, "NAME *", binding.name)
+            isValid = false
+        } else if (name.length !in 3..10) {
+            binding.etName.error = "Name must be between 3 and 10 characters"
+            setMandatoryFieldIndicatorVisible(true, "NAME *", binding.name)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "NAME *", binding.name)
+        }
+
+        // Validate Mobile Number
+        val mobileNumber = binding.etMobileNumber.text.toString().trim()
+        if (TextUtils.isEmpty(mobileNumber)) {
+            binding.etMobileNumber.error = "Mobile number is required"
+            setMandatoryFieldIndicatorVisible(true, "MOBILE NUMBER *", binding.PhoneNum)
+            isValid = false
+        } else if (mobileNumber.length != 10) {
+            binding.etMobileNumber.error = "Mobile number must be 10 digits"
+            setMandatoryFieldIndicatorVisible(true, "MOBILE NUMBER *", binding.PhoneNum)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "MOBILE NUMBER *", binding.PhoneNum)
+        }
+
+        // Validate City (Locality)
+        val city = binding.etLocality.text.toString().trim()
+        if (TextUtils.isEmpty(city)) {
+            binding.etLocality.error = "City is required"
+            setMandatoryFieldIndicatorVisible(true, "CITY *", binding.local)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "CITY *", binding.local)
+        }
+
+        // Validate Pincode
+        val pincode = binding.etPincode.text.toString().trim()
+        if (TextUtils.isEmpty(pincode)) {
+            binding.etPincode.error = "Pincode is required"
+            setMandatoryFieldIndicatorVisible(true, "PINCODE *", binding.pin)
+            isValid = false
+        } else if (pincode.length != 6 || !pincode.matches("\\d{6}".toRegex())) {
+            binding.etPincode.error = "Pincode must be a 6-digit numeric value"
+            setMandatoryFieldIndicatorVisible(true, "PINCODE *", binding.pin)
+            isValid = false
+        } else {
+            setMandatoryFieldIndicatorVisible(false, "PINCODE *", binding.pin)
+        }
+
+        return isValid
+    }
+
+    private fun setMandatoryFieldIndicatorVisible(visible: Boolean, text: String, textView: TextView) {
+        if (visible) {
+            textView.visibility = View.VISIBLE
+            textView.text = text  // Change text dynamically
+        } else {
+            textView.visibility = View.GONE
         }
     }
 
@@ -220,7 +243,14 @@ class ManualLocation : AppCompatActivity() {
         if (button is AppCompatButton) {
             button.setBackgroundResource(R.drawable.linearbg) // Use drawable resource for background
             button.setTextColor(ContextCompat.getColor(this, R.color.white))
-            button.compoundDrawablesRelative.forEach { it?.setTint(ContextCompat.getColor(this, R.color.white)) }
+            button.compoundDrawablesRelative.forEach {
+                it?.setTint(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.white
+                    )
+                )
+            }
         }
         selectedAddressType = type
     }
@@ -228,24 +258,29 @@ class ManualLocation : AppCompatActivity() {
     private fun resetButtonStyle(button: AppCompatButton, color: Int) {
         button.setBackgroundResource(R.drawable.colorlinear) // Set the default background drawable
         button.setTextColor(ContextCompat.getColor(this, color))
-        button.compoundDrawablesRelative.forEach { it?.setTint(ContextCompat.getColor(this, color)) }
+        button.compoundDrawablesRelative.forEach {
+            it?.setTint(
+                ContextCompat.getColor(
+                    this,
+                    color
+                )
+            )
+        }
     }
-
 
 
     private fun saveAddressToFirebase() {
         val userId = auth.currentUser?.uid ?: return
         val addressString = "${binding.etName.text.toString().trim()},\n" +
-                "${binding.etHouseFlatNo.text.toString().trim()}, " +
-                "${binding.etStreet.text.toString().trim()}, " +
-                "${binding.etBuildingName.text.toString().trim()}\n" +
                 "${binding.etLocality.text.toString().trim()} - " +
                 "${binding.etPincode.text.toString().trim()},\n" +
-        "${binding.etMobileNumber.text.toString().trim()} "
+                "${binding.etMobileNumber.text.toString().trim()} "
         val locality = binding.etLocality.text.toString().trim()
+
         try {
             // Use Geocoder to get latitude and longitude from address
             val addresses: MutableList<Address>? = geocoder.getFromLocationName(addressString, 1)
+
             if (addresses != null && addresses.isNotEmpty()) {
                 val latitude = addresses[0].latitude
                 val longitude = addresses[0].longitude
@@ -286,16 +321,14 @@ class ManualLocation : AppCompatActivity() {
                     val shopsWithinThreshold = nearbyShops.joinToString(", ")
 
                     // Store the address, latitude, longitude, and nearby shops in Firebase
-                    val locationData = HashMap<String, Any>()
-                    locationData["address"] = addressString
-                    locationData["latitude"] = latitude
-                    locationData["longitude"] = longitude
+                    val locationData = hashMapOf(
+                        "address" to addressString,
+                        "latitude" to latitude,
+                        "longitude" to longitude
+                    )
 
                     if (nearbyShops.isNotEmpty()) {
                         locationData["shopname"] = shopsWithinThreshold
-                    } else {
-                        // Remove shopname if no nearby shops
-                        locationData.remove("shopname")
                     }
 
                     // Store the locality directly inside Locations -> userId
@@ -310,13 +343,35 @@ class ManualLocation : AppCompatActivity() {
                             }
                         }
 
+                    // Store latitude and longitude under Locations -> userId
+                    val locationRef = database.child("Locations").child(userId)
+                    locationRef.child("latitude").setValue(latitude)
+                        .addOnCompleteListener { latitudeSaveTask ->
+                            if (!latitudeSaveTask.isSuccessful) {
+                                Toast.makeText(
+                                    this@ManualLocation,
+                                    "Failed to save latitude: ${latitudeSaveTask.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    locationRef.child("longitude").setValue(longitude)
+                        .addOnCompleteListener { longitudeSaveTask ->
+                            if (!longitudeSaveTask.isSuccessful) {
+                                Toast.makeText(
+                                    this@ManualLocation,
+                                    "Failed to save longitude: ${longitudeSaveTask.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
                     // Store shopname under Locations -> userId -> shopname
                     database.child("Locations").child(userId).child("shopname")
                         .setValue(shopsWithinThreshold)
                         .addOnCompleteListener { shopnameSaveTask ->
-                            if (shopnameSaveTask.isSuccessful) {
-                                // Optional: Handle success message or action if needed
-                            } else {
+                            if (!shopnameSaveTask.isSuccessful) {
                                 Toast.makeText(
                                     this@ManualLocation,
                                     "Failed to save shopname: ${shopnameSaveTask.exception?.message}",
@@ -327,7 +382,7 @@ class ManualLocation : AppCompatActivity() {
 
                     // Store address data under selected address type
                     selectedAddressType?.let {
-                        database.child("Locations").child(userId).child(it).setValue(locationData)
+                        locationRef.child(it).setValue(locationData)
                             .addOnCompleteListener { addressSaveTask ->
                                 if (addressSaveTask.isSuccessful) {
                                     Toast.makeText(
@@ -361,6 +416,12 @@ class ManualLocation : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            } else {
+                Toast.makeText(
+                    this@ManualLocation,
+                    "No address found for provided location.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } catch (e: IOException) {
             Toast.makeText(

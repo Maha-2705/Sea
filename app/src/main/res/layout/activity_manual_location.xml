@@ -73,6 +73,7 @@
                    android:orientation="vertical"
                    android:layout_marginTop="16dp">
                     <TextView
+                        android:id="@id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="NAME"
@@ -103,6 +104,7 @@
                    android:orientation="vertical"
                    android:layout_marginTop="12dp">
                     <TextView
+                        android:id="@+id/Phone_num"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="MOBILE NUMBER"
@@ -134,7 +136,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="HOUSE/FLOT NO"
+                        android:text="DOOR NO"
                         android:textColor="@color/navy"
 
                         android:textSize="14sp"
@@ -144,7 +146,7 @@
                         android:id="@+id/et_house_flat_no"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="House/Flat No"
+                        android:hint="OPTIONAL"
                         android:inputType="text"
                         android:fontFamily="@font/roboto"
                         android:textColor="@color/black"
@@ -173,7 +175,7 @@
                         android:id="@+id/et_building_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Building Name"
+                        android:hint="OPTIONAL"
                         android:inputType="text"
                         android:maxLines="1"
                         android:fontFamily="@font/roboto"
@@ -203,7 +205,7 @@
                         android:id="@+id/et_street"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Street"
+                        android:hint="OPTIONAL"
                         android:inputType="text"
                         android:fontFamily="@font/roboto"
                         android:textColor="@color/black"
@@ -221,6 +223,7 @@
                    android:orientation="vertical"
                    android:layout_marginTop="12dp">
                     <TextView
+                        android:id="@+id/pin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="PINCODE"
@@ -250,9 +253,10 @@
                    android:orientation="vertical"
                    android:layout_marginTop="12dp">
                     <TextView
+                        android:id="@+id/local"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="LOCALITY"
+                        android:text="CITY"
                         android:textColor="@color/navy"
                         android:textSize="14sp"
                         android:fontFamily="@font/roboto"

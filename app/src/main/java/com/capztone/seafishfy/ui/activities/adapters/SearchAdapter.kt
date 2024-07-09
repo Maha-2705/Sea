@@ -1,23 +1,26 @@
 package com.capztone.seafishfy.ui.activities.adapters
 
+
+
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.capztone.seafishfy.R
 import com.capztone.seafishfy.databinding.SearchItemBinding
-import com.capztone.seafishfy.ui.activities.fragments.DetailsFragment
 import com.capztone.seafishfy.ui.activities.models.MenuItem
 
 class SearchAdapter(
     private var menuItems: List<MenuItem>,
-    private val context: Context
+    private val context: Context,
+    private val noResultsTextView: TextView // Add this parameter
 ) : RecyclerView.Adapter<SearchAdapter.MenuViewHolder>() {
 
     private var filteredMenuItems: List<MenuItem> = menuItems
@@ -40,7 +43,7 @@ class SearchAdapter(
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    openDetailsFragment(it,position)
+                    openDetailsFragment(it, position)
                 }
             }
         }
@@ -58,6 +61,7 @@ class SearchAdapter(
             // Navigate to the details fragment using NavController
             view.findNavController().navigate(R.id.action_searchFragment_to_detailsFragment, bundle)
         }
+
         fun bind(menuItem: MenuItem) {
             binding.apply {
                 // Join food names with commas
@@ -89,5 +93,12 @@ class SearchAdapter(
             }
         }
         notifyDataSetChanged()
+
+        // Show/hide the noResultsTextView based on the filtered list size
+        if (filteredMenuItems.isEmpty()) {
+            noResultsTextView.visibility = View.VISIBLE
+        } else {
+            noResultsTextView.visibility = View.GONE
+        }
     }
 }

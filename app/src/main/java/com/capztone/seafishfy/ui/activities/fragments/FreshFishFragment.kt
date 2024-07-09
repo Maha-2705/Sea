@@ -11,7 +11,6 @@ import com.capztone.seafishfy.databinding.FragmentFreshFishBinding
 import com.capztone.seafishfy.databinding.FragmentSearchBinding
 import com.capztone.seafishfy.ui.activities.MainActivity
 import com.capztone.seafishfy.ui.activities.ViewModel.FreshFishViewModel
-import com.capztone.seafishfy.ui.activities.adapters.SearchAdapter
 import com.capztone.seafishfy.ui.activities.models.MenuItem
 import com.capztone.seafishfy.ui.activities.ViewModel.SearchViewModel
 import com.capztone.seafishfy.ui.activities.adapters.FreshFishAdapter

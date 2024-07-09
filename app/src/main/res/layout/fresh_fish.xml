@@ -90,6 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
+            android:weightSum="3"
             android:padding="8dp"
             android:background="@drawable/linearbg"
             android:layout_gravity="center"
@@ -100,7 +101,7 @@
                 android:id="@+id/minusImageButton"
                 android:layout_width="12dp"
                 android:layout_height="20dp"
-
+android:layout_weight="1"
                 android:backgroundTint="@color/navy"
                 android:src="@drawable/minus1" />
 
@@ -109,6 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"
+                android:gravity="center"
+                android:layout_weight="1"
                 android:textColor="@color/white"
                 android:textSize="15sp"
 
@@ -122,6 +125,7 @@
                 android:layout_height="20dp"
                 android:backgroundTint="@color/navy"
                 android:src="@drawable/add"
+                android:layout_weight="1"
                 android:layout_marginStart="10dp"/>
 
         </LinearLayout>

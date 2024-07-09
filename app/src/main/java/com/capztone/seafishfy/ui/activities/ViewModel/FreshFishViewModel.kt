@@ -104,7 +104,7 @@ class FreshFishViewModel : ViewModel() {
         return when (category.toLowerCase()) {
             "crabs" -> "menu4"
             "dry fish" -> "menu1"
-            "pickles" -> "menu2"
+            "pickle" -> "menu2"
             "shrimps" -> "menu3"
             "lobster" -> "menu5"
             "fresh fish" -> "menu"
