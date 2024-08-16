@@ -11,9 +11,9 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="44dp"
         android:text="@string/search"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/nunito"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,11 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="44dp"
         android:contentDescription="@string/image_desc_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left" />
+        app:srcCompat="@drawable/arrow_left1" />
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14"
         app:queryBackground="@android:color/transparent"
-        app:queryHint="What do you want to order?"
+        app:queryHint="Search for Seafood Delights"
         app:searchIcon="@drawable/search"
         tools:ignore="MissingClass" />
 
@@ -64,7 +64,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView16"
         tools:listitem="@layout/search_item" />
 
-
+    <TextView
+        android:id="@+id/noResultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Couldn't find any products for your search"
+        android:textSize="15sp"
+        android:textColor="@color/navy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/textView16"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
 
     <ImageView
         android:id="@+id/textView16"

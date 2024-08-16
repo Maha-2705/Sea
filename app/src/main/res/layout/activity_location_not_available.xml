@@ -12,13 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:textColor="@color/black"
-        android:text="Sorry! Shops aren't accepting orders for your locations"
+        android:fontFamily="@font/nunito"
+        android:text="Sorry! Shops aren't accepting orders for your location"
         android:textAlignment="center"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -32,13 +33,15 @@
         android:id="@+id/another"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/greenbuttongradent"
+        android:background="@drawable/search_shape"
         android:layout_below="@id/imageView"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/navy"
+        android:textAllCaps="false"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:text="Use Another Location"
         android:textColor="@color/white"
-        android:fontFamily="@font/roboto"
-        android:textSize="16sp"
-        android:textFontWeight="600"/>
+        android:fontFamily="@font/nunito"
+        android:textSize="15sp"
+        android:textFontWeight="500"/>
 </RelativeLayout>

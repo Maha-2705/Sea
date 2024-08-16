@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
@@ -29,18 +29,18 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cartImageView1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="10dp"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/cartImageView"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:scaleType="centerCrop"
                     tools:srcCompat="@tools:sample/avatars"/>
             </androidx.cardview.widget.CardView>
@@ -48,8 +48,8 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/minusImageButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/add_to_cart_shape"
                 android:padding="2dp"
@@ -63,8 +63,8 @@
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/plusImageButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="280dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="40dp"
@@ -80,11 +80,30 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
+                android:layout_marginTop="10dp"
                 android:text="@string/cart_food_name"
+                android:textFontWeight="500"
                 android:ellipsize="end"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@+id/cartFoodNameTextView1"
+                app:layout_constraintStart_toEndOf="@+id/cartImageView1"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/cartFoodNameTextView1"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/nunito"
+                android:text="@string/cart_food_name"
+                android:textFontWeight="500"
+
+                android:ellipsize="end"
+                android:textColor="@color/black"
+                android:layout_marginTop="30dp"
+                android:textSize="13sp"
                 android:maxLines="1"
                 app:layout_constraintBottom_toTopOf="@+id/carItemPriceTextView"
                 app:layout_constraintStart_toEndOf="@+id/cartImageView1"
@@ -95,19 +114,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
+                android:layout_marginBottom="5dp"
+                android:textSize="13sp"
                 android:text="@string/price"
                 android:textColor="@color/navy"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cartImageView1"
-                app:layout_constraintTop_toBottomOf="@+id/cartFoodNameTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/cartFoodNameTextView1" />
 
             <TextView
                 android:id="@+id/quantityTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:text="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textColor="@color/black"
@@ -121,12 +142,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:text="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textColor="@color/black"
+                android:gravity="center"
                 android:layout_marginTop="18dp"
-                android:layout_marginStart="190dp"
+                android:layout_marginStart="192dp"
                 app:layout_constraintStart_toStartOf=" parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -135,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:text="shop"
                 android:visibility="invisible"
                 android:textColor="@color/black"

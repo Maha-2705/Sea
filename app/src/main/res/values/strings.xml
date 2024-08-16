@@ -113,9 +113,9 @@
     </string>
     <string-array name="languages_array">
         <item>Tamil</item>
-        <item>English</item>
         <item>Malayalam</item>
         <item>Telugu</item>
     </string-array>
+
 
 </resources>

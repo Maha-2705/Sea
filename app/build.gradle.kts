@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.capztone.seafishfy"
+    namespace = "com.capztone.fishfy"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.capztone.seafishfy"
+        applicationId = "com.capztone.fishfy"
         minSdk = 24
         targetSdk = 34
-        versionCode = 11
-        versionName = "1.1"
+        versionCode = 14
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -74,9 +74,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.maps.android:android-maps-utils:3.8.2")
     implementation ("com.google.maps.android:android-maps-utils:3.8.2")
-
+    implementation ("com.github.Marvel999:Android-Loading-Animation:1.0.0")
     implementation("com.google.firebase:firebase-storage-ktx:21.0.0")
     implementation("androidx.activity:activity:1.8.0")
+    implementation ("com.google.code.gson:gson:2.8.8")
+
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.2")
     testImplementation("junit:junit:4.13.2")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")

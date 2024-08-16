@@ -27,13 +27,17 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonNext"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/standard_padding"
         android:text="@string/next"
+        android:background="@drawable/greenbuttongradent"
         android:textColor="@android:color/white"
-        android:textStyle="bold"
         app:backgroundTint="@color/navy"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:textSize="15sp"
+        android:fontFamily="@font/nunito"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

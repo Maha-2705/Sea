@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="90dp"
+    android:layout_width="105dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="8dp"
     android:background="@drawable/cardstroke3"
     android:layout_marginStart="3dp"
-    android:layout_marginEnd="2dp"
+    android:layout_marginEnd="3dp"
     android:layout_marginBottom="8dp"
     android:layout_marginTop="5dp">
 
@@ -24,8 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fish"
+        android:fontFamily="@font/nunito"
         android:textColor="@color/black"
-        android:textSize="13sp"
+        android:textSize="12sp"
         android:layout_marginTop="8dp"
         android:gravity="center" />
 </LinearLayout>

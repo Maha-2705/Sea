@@ -14,7 +14,7 @@
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left"
+        app:srcCompat="@drawable/arrow_left1"
         android:contentDescription="@string/image_desc_text" />
 
 
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
 
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:textColor="@color/black"
                 android:text="Customer Id :"/>
 
@@ -104,7 +104,7 @@
                 android:id="@+id/oid"
                 android:textSize="15dp"
 
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             <TextView
                 android:id="@+id/foodName"
                 android:textSize="15dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -136,7 +136,7 @@
                 android:textSize="15dp"
                 android:textStyle="bold"
 
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:textColor="@color/blue"
                 android:text="Food Price:"/>
 
@@ -147,21 +147,25 @@
                 android:layout_marginStart="80dp"
 
                 android:textSize="15dp"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:textColor="@color/black"
                 android:text="Quantity :"/>
 
         </LinearLayout>
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/orderstatus"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:layout_marginTop="290dp"
-            android:textSize="16sp"
+            android:background="@drawable/greenbuttongradent"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:textColor="@color/white"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:backgroundTint="@color/navy"
             android:layout_marginStart="20dp"
             android:text="Order Status" />
@@ -171,7 +175,7 @@
             android:layout_height="wrap_content"
             android:text="Cancel Order"
             android:textSize="15dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:textColor="@color/black"
             android:layout_marginTop="290dp"
             android:layout_marginStart="200dp"/>
@@ -181,7 +185,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textSize="16dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:textColor="@color/navy"
             android:layout_marginTop="283dp"
             android:layout_marginEnd="8dp"
@@ -192,7 +196,7 @@
             android:layout_height="wrap_content"
             android:text="Order Time"
             android:textSize="15dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:textColor="@color/black"
             android:layout_marginTop="340dp"
             android:layout_marginStart="230dp"/>

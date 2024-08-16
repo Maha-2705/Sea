@@ -16,26 +16,26 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="30dp"
             android:background="@android:color/transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/arrow_left"
+            app:srcCompat="@drawable/arrow_left1"
             android:contentDescription="image_desc_text" />
 
         <TextView
             android:id="@+id/detailFoodNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="330dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginStart="22dp"
             android:text="@string/food_name"
             android:textSize="16sp"
             android:layout_marginEnd="10dp"
             android:textColor="@color/Lblack"
-            android:textFontWeight="700"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -48,12 +48,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:text="@string/food_name"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:layout_marginEnd="10dp"
             android:textColor="@color/Lblack"
-            android:textFontWeight="700"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -61,11 +61,11 @@
             android:id="@+id/shopname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textFontWeight="700"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
-            android:layout_marginTop="20dp"
-            android:text="Shopname"
+            android:fontFamily="@font/nunito"
+            android:layout_marginTop="40dp"
+            android:text=""
             android:textSize="20sp"
             android:gravity="center"
             android:textColor="@color/black"
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp"
@@ -99,18 +99,18 @@
             android:id="@+id/textView21"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginStart="35dp"
+            android:layout_marginStart="18dp"
             android:layout_marginTop="16dp"
             android:text="₹200"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView3"
+            app:layout_constraintTop_toBottomOf="@id/detailFoodNameTextView1"
             android:padding="5dp"
-            android:textStyle="bold"
+
             android:textSize="20sp"
             android:textColor="@color/blue"
-            android:textFontWeight="700"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"/>
+            android:fontFamily="@font/nunito"/>
 
         <TextView
             android:id="@+id/textView22"
@@ -120,40 +120,41 @@
             android:layout_marginTop="16dp"
             android:text="/1kg"
             android:padding="5dp"
-            android:textStyle="bold"
+
             android:textSize="19sp"
-            android:textColor="@color/green"
-            android:textFontWeight="700"
+            android:textColor="@color/navy"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             app:layout_constraintStart_toEndOf="@id/textView21"
-            app:layout_constraintTop_toBottomOf="@id/cardView3" />
+            app:layout_constraintTop_toBottomOf="@id/detailFoodNameTextView1" />
 
         <TextView
             android:id="@+id/textView20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="16dp"
             android:text="Recipe"
             android:textSize="20sp"
             android:textColor="@color/black"
-            android:textFontWeight="700"
+            android:textFontWeight="500"
             android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detailFoodNameTextView1" />
+            app:layout_constraintTop_toBottomOf="@id/textView21" />
 
         <TextView
             android:id="@+id/detailsShortDescriptionTextView"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
-            android:fontFamily="@font/roboto"
+            android:lineSpacingExtra="3dp"
+            android:fontFamily="@font/nunito"
             android:justificationMode="inter_word"
-            android:lineHeight="40px"
+            android:lineHeight="53px"
             android:text="@string/short_description_lorem"
             android:textColor="@color/Lblack"
             android:textFontWeight="400"
@@ -161,61 +162,52 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView20" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/minusImageButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/add_to_cart_shape"
-            android:padding="2dp"
-            android:src="@drawable/minus1"
-            app:layout_constraintBottom_toBottomOf="@+id/plusImageButton"
-            app:layout_constraintEnd_toStartOf="@+id/quantityText"
-            app:layout_constraintTop_toTopOf="@+id/plusImageButton" />
-
-        <TextView
-            android:id="@+id/quantityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/roboto"
-            android:textColor="@color/black"
-            android:text="@string/_1"
-            app:layout_constraintBottom_toBottomOf="@+id/plusImageButton"
-            app:layout_constraintEnd_toStartOf="@+id/plusImageButton"
-            app:layout_constraintTop_toTopOf="@+id/plusImageButton" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/plusImageButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="330dp"
-            android:layout_marginEnd="40dp"
-            android:background="@drawable/add_to_cart_shape"
-            android:padding="2dp"
-            android:src="@drawable/plus"
+        <LinearLayout
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:weightSum="3"
+            android:padding="5dp"
+            android:background="@drawable/linearbg"
+            android:layout_gravity="center"
+            android:layout_marginBottom="50dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/detailAddToCartButton"
-            android:layout_width="0dp"
-            android:layout_height="57dp"
-            android:layout_marginTop="90dp"
-            android:background="@drawable/blue"
-            android:textFontWeight="700"
-            android:lineHeight="24px"
-            android:fontFamily="@font/roboto"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="90dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="20dp"
-            android:text="@string/add_to_cart"
-            android:textColor="@color/navy"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/detailsShortDescriptionTextView" />
+            app:layout_constraintTop_toBottomOf="@id/detailsShortDescriptionTextView"
+app:layout_constraintBottom_toBottomOf="parent"
+
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/minusImageButton"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+
+                android:backgroundTint="@color/navy"
+                android:src="@drawable/minus1" />
+
+            <TextView
+                android:id="@+id/quantityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:fontFamily="@font/nunito"/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/plusImageButton"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:backgroundTint="@color/navy"
+
+                android:src="@drawable/add"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

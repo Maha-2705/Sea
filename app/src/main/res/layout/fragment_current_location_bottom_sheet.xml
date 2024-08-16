@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
     android:orientation="vertical"
-    android:background="@color/lblue"
+    android:background="@color/llorange"
     android:id="@+id/container"
     tools:context=".ui.activities.fragments.CurrentLocationBottomSheet"
     tools:ignore="MissingDefaultResource">
@@ -17,8 +17,7 @@
         android:layout_height="65dp"
         android:text="New Address"
         android:textSize="18dp"
-        android:background="@drawable/bg"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/nunito"
         android:paddingTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,9 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:text="New Address"
-        android:textSize="18dp"
-        android:background="@drawable/bg"
-        android:fontFamily="@font/roboto"
+        android:textSize="20sp"
+
+        android:fontFamily="@font/nunito"
         android:paddingTop="8dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,14 +49,15 @@
         android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_left"
+        app:srcCompat="@drawable/arrow_left1"
+
         android:contentDescription="@string/image_desc_text" />
 
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/lblue"
+        android:background="@color/llorange"
         app:layout_constraintTop_toBottomOf="@id/neww"
         app:layout_constraintBottom_toTopOf="@id/Address_save"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,27 +75,31 @@
                 android:orientation="vertical"
                 android:layout_marginTop="16dp">
                 <TextView
+                    android:id="@+id/Address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="BUILDING NAME"
+                    android:text="Address"
                     android:textColor="@color/navy"
                     android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/nunito"
                     android:layout_marginStart="3dp" />
                 <EditText
                     android:id="@+id/et_building_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Building Name"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:fontFamily="@font/roboto"
+                    android:hint="Address"
+                    android:lineSpacingExtra="5dp"
+                    android:maxLength="150"
+                    android:maxLines="3"
+                    android:paddingBottom="15dp"
+                    android:fontFamily="@font/nunito"
                     android:textColor="@color/black"
                     android:textColorHint="@color/ThickAsh"
                     android:textSize="13sp"
-                    android:paddingBottom="20dp"
                     android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
+                />
+
+
             </LinearLayout>
 
 
@@ -107,18 +111,20 @@
                 android:layout_marginTop="12dp">
                 <TextView
                     android:layout_width="match_parent"
+                    android:id="@+id/name"
                     android:layout_height="wrap_content"
-                    android:text="NAME"
+                    android:text="Name"
                     android:textColor="@color/navy"
                     android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/nunito"
                     android:layout_marginStart="3dp"/>
                 <EditText
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Name"
-                    android:fontFamily="@font/roboto"
+
+                    android:fontFamily="@font/nunito"
                     android:textColor="@color/black"
                     android:textColorHint="@color/ThickAsh"
                     android:textSize="13sp"
@@ -136,12 +142,13 @@
                 android:orientation="vertical"
                 android:layout_marginTop="12dp">
                 <TextView
+                    android:id="@+id/mblnum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="MOBILE NUMBER"
+                    android:text="Mobile Number"
                     android:textColor="@color/navy"
                     android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
+                    android:fontFamily="@font/nunito"
                     android:layout_marginStart="3dp"/>
                 <EditText
                     android:id="@+id/et_mobile_number"
@@ -149,38 +156,10 @@
                     android:layout_height="wrap_content"
                     android:hint="Mobile Number"
                     android:inputType="phone"
-                    android:fontFamily="@font/roboto"
+                    android:maxLength="10"
+                    android:fontFamily="@font/nunito"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/house"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="HOUSE/FLOT NO"
-                    android:textColor="@color/navy"
-
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp"/>
-                <EditText
-                    android:id="@+id/et_house_flat_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="House/Flat No"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
+                    android:maxLines="1"
                     android:textColorHint="@color/ThickAsh"
                     android:textSize="13sp"
                     android:paddingBottom="20dp"
@@ -189,92 +168,6 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/streetname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="STREET NAME"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_street"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Street"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/Pincode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="PINCODE"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_pincode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Pincode"
-                    android:inputType="number"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/locality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="LOCALITY"
-                    android:textColor="@color/navy"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/roboto"
-                    android:layout_marginStart="3dp" />
-                <EditText
-                    android:id="@+id/et_locality"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Locality"
-                    android:inputType="text"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/ThickAsh"
-                    android:textSize="13sp"
-                    android:paddingBottom="20dp"
-                    android:backgroundTint="@color/ash"
-                    android:lineHeight="1dp"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -288,10 +181,13 @@
                     android:id="@+id/btn_save_as_home"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="HOME"
-                    android:textColor="@color/black"
+                    android:text="Home"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/navy"
                     android:drawableStart="@drawable/home"
                     android:drawablePadding="5dp"
+                    android:textAllCaps="false"
                     android:drawableTint="@color/navy"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
@@ -302,8 +198,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:text="WORK"
-                    android:textColor="@color/black"
+                    android:text="Work"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/navy"
                     android:drawableStart="@drawable/work"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/navy"
@@ -316,8 +215,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:text="OTHER"
-                    android:textColor="@color/black"
+                    android:text="Other"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/nunito"
+                    android:textColor="@color/navy"
                     android:drawableStart="@drawable/loco"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/navy"
@@ -332,20 +234,21 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/Address_save"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/greenbuttongradent"
+        android:background="@drawable/search_shape"
+        android:backgroundTint="@color/navy"
         android:elevation="5dp"
-        android:fontFamily="@font/robo_font"
-        android:text="SAVE ADDRESS"
+        android:fontFamily="@font/nunito"
+        android:text="Save Address"
         android:textFontWeight="500"
         android:lineHeight="20px"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@id/scroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

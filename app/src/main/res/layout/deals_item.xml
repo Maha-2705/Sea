@@ -6,13 +6,13 @@
     android:backgroundTint="@color/lblue"
     android:layout_height="wrap_content"
     android:layout_marginStart="3dp"
-    android:layout_marginEnd="1dp"
+    android:layout_marginEnd="3dp"
     android:layout_marginBottom="8dp"
     android:layout_marginTop="8dp">
 
     <LinearLayout
         android:layout_width="130dp"
-        android:layout_height="290dp"
+        android:layout_height="250dp"
         android:background="@drawable/cardstroke1"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,11 +68,10 @@
             android:layout_marginTop="7dp"
 
             android:ellipsize="end"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:text="@string/food_name"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/nearImage"
             tools:text="Food Name" />
 
@@ -90,7 +89,10 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/nearImage"
             tools:text="Food Name" />
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
         <TextView
             android:id="@+id/Qty"
@@ -100,14 +102,13 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:gravity="center"
             android:lineHeight="20px"
             android:text="1 kg"
             android:textColor="@color/navy"
             android:textFontWeight="600"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -117,37 +118,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginEnd="5dp"
-            android:fontFamily="@font/roboto"
+            android:layout_marginEnd="3dp"
+            android:fontFamily="@font/nunito"
             android:gravity="center"
             android:lineHeight="20px"
-
-            android:text="30% Off"
+            android:layout_marginStart="50dp"
+            android:text="₹300"
             android:textColor="@color/black"
-            android:textFontWeight="600"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:textFontWeight="500"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+    </LinearLayout>
         <LinearLayout
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/linearbg"
+            android:layout_marginTop="8dp"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:weightSum="3"
+            android:background="@drawable/linearbg"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/minusImageButton"
                 android:layout_width="12dp"
-                android:layout_height="20dp"
-
+                android:layout_height="15dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/navy"
                 android:src="@drawable/minus1" />
 
@@ -155,21 +159,21 @@
                 android:id="@+id/quantityy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:fontFamily="@font/roboto"
                 android:text="Add"
-
+                android:gravity="center"
+                android:layout_weight="1"
                 android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="14sp"
+                android:fontFamily="@font/nunito" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/plusImageButton"
                 android:layout_width="15dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="10dp"
                 android:backgroundTint="@color/navy"
-                android:src="@drawable/add" />
+                android:src="@drawable/add"
+                android:layout_weight="1"
+                />
 
         </LinearLayout>
     </LinearLayout>

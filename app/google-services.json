@@ -8,6 +8,149 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:646492882054:android:865541eb28fd42402abd07",
+        "android_client_info": {
+          "package_name": "com.capztone.admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646492882054-i8bvr424lt4916fkm4e4bkp0e7loo2ef.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.admin",
+            "certificate_hash": "dbc3625fda890d1704917a7c9d0a137141883706"
+          }
+        },
+        {
+          "client_id": "646492882054-vdoc0jg9b4upv2v3ecpha18a5srae80u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.admin",
+            "certificate_hash": "a4415f27aca160c0d0a45716ed9e4298efd97028"
+          }
+        },
+        {
+          "client_id": "646492882054-vv5rut31epumejf85v0jc0o8qlil6dqq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.admin",
+            "certificate_hash": "93b1641a63536babfcc6239725cdf04b34ea8f4b"
+          }
+        },
+        {
+          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646492882054:android:cd7cb2c63676d0992abd07",
+        "android_client_info": {
+          "package_name": "com.capztone.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646492882054-0qi3eujtlbrv6jsbhm5dfd9vfms83aul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.driver",
+            "certificate_hash": "dbc3625fda890d1704917a7c9d0a137141883706"
+          }
+        },
+        {
+          "client_id": "646492882054-a4sp4u51f6et16oq8dfk52ndo60fqqhe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.driver",
+            "certificate_hash": "93b1641a63536babfcc6239725cdf04b34ea8f4b"
+          }
+        },
+        {
+          "client_id": "646492882054-gh70b77m7boedmik1ulhkg9ner7gtv55.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.driver",
+            "certificate_hash": "08784b5be37b17f80381ca1e5ca95e7812f7a73e"
+          }
+        },
+        {
+          "client_id": "646492882054-i9tc4d9fke0ctnmuc67arj6e4lvg182q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.capztone.driver",
+            "certificate_hash": "a4415f27aca160c0d0a45716ed9e4298efd97028"
+          }
+        },
+        {
+          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646492882054:android:f39e080f2469e8bb2abd07",
+        "android_client_info": {
+          "package_name": "com.capztone.fishfy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:646492882054:android:fa578f75898e8ab92abd07",
         "android_client_info": {
           "package_name": "com.capztone.seafishfy"
@@ -15,178 +158,43 @@
       },
       "oauth_client": [
         {
-          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:646492882054:android:3262885577deb8d52abd07",
-        "android_client_info": {
-          "package_name": "com.example.admin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "646492882054-23c330e97kk6qj6imki84lsnnc3tl0c5.apps.googleusercontent.com",
+          "client_id": "646492882054-738ifirodbaduhbse84929e79mli89ij.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.admin",
-            "certificate_hash": "93b1641a63536babfcc6239725cdf04b34ea8f4b"
-          }
-        },
-        {
-          "client_id": "646492882054-b5bj04g0u1qiu2i03aphmdkvtk2s8vn8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.admin",
-            "certificate_hash": "dbc3625fda890d1704917a7c9d0a137141883706"
-          }
-        },
-        {
-          "client_id": "646492882054-u6t5jshi64o7o96dpthpk3bh802cup55.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.admin",
+            "package_name": "com.capztone.seafishfy",
             "certificate_hash": "a4415f27aca160c0d0a45716ed9e4298efd97028"
           }
         },
         {
-          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:646492882054:android:94d9b9176d0e21e82abd07",
-        "android_client_info": {
-          "package_name": "com.example.driver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "646492882054-03v6gvarqbsmvvlllp0q85e9v2siqejg.apps.googleusercontent.com",
+          "client_id": "646492882054-fgg3p51li2i80vk35324q7p55jl0vnd9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.driver",
-            "certificate_hash": "08784b5be37b17f80381ca1e5ca95e7812f7a73e"
+            "package_name": "com.capztone.seafishfy",
+            "certificate_hash": "01ec4f4e4723b1f275336cb68acbf3704ff5831f"
           }
         },
         {
-          "client_id": "646492882054-73udvqjus3jrjir3h2gu2flhnip1a2s6.apps.googleusercontent.com",
+          "client_id": "646492882054-r0stf59p6roidp8j8g0tl5is7kkij6of.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.driver",
+            "package_name": "com.capztone.seafishfy",
             "certificate_hash": "93b1641a63536babfcc6239725cdf04b34ea8f4b"
           }
         },
         {
-          "client_id": "646492882054-7maecmlnr5qk32dj9nscv161kco7s60g.apps.googleusercontent.com",
+          "client_id": "646492882054-re5r1qm78n53i0o6vf9qm6kso0rfr1iq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.driver",
+            "package_name": "com.capztone.seafishfy",
             "certificate_hash": "dbc3625fda890d1704917a7c9d0a137141883706"
           }
         },
         {
-          "client_id": "646492882054-hs8c4p9u36do7qv3sgrtd95fojllur29.apps.googleusercontent.com",
+          "client_id": "646492882054-ul6dh16oodfgu7g4dcgh8nri6s0nnqak.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.driver",
-            "certificate_hash": "a4415f27aca160c0d0a45716ed9e4298efd97028"
-          }
-        },
-        {
-          "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCydsVWdPuIDOqKarwX4IoHcGrzmqwXyS4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "646492882054-q61o0fqaiq6neostd81k87sav19sa72e.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:646492882054:android:db7e5442281bb0212abd07",
-        "android_client_info": {
-          "package_name": "com.example.seafishfy"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "646492882054-3h8sdn0r4jcjku7bu2j0agbt6um46cvb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.seafishfy",
-            "certificate_hash": "a4415f27aca160c0d0a45716ed9e4298efd97028"
-          }
-        },
-        {
-          "client_id": "646492882054-512grasgpp59hi9is4p7bluj1drlp2f9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.seafishfy",
-            "certificate_hash": "dbc3625fda890d1704917a7c9d0a137141883706"
-          }
-        },
-        {
-          "client_id": "646492882054-fm0pvigvva2rr0ol102o2ia5fvt4qfvf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.seafishfy",
-            "certificate_hash": "08784b5be37b17f80381ca1e5ca95e7812f7a73e"
-          }
-        },
-        {
-          "client_id": "646492882054-nl59b1t9v9sldd87p3b2j0nqmbiheh6b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.seafishfy",
-            "certificate_hash": "93b1641a63536babfcc6239725cdf04b34ea8f4b"
+            "package_name": "com.capztone.seafishfy",
+            "certificate_hash": "d053ae34e44235b00bbb82728a05e97092c3ecfe"
           }
         },
         {

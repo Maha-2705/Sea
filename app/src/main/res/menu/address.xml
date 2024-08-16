@@ -3,7 +3,8 @@
     <item
         android:id="@+id/use_current_location"
         android:title="Edit"
-        />
+        android:fontFamily="@font/nunito"
+        android:textSize="14sp" />
 
     <!-- Add more saved addresses as needed -->
 </menu>

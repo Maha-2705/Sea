@@ -3,15 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@android:color/transparent"
+    android:background="@drawable/cardstroke2"
     android:backgroundTint="@color/llorange"
-    android:padding="16dp">
+    android:padding="16dp"
+    >
 
 <TextView
 android:id="@+id/dialog_title"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:text="Different Shop"
+    android:textSize="18sp"
+    android:textColor="@color/black"
+    android:fontFamily="@font/nunito"
 android:textAppearance="?android:attr/textAppearanceLarge"
 android:paddingBottom="8dp" />
 
@@ -19,6 +23,9 @@ android:paddingBottom="8dp" />
 android:id="@+id/dialog_message"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
+    android:textColor="@color/black"
+    android:fontFamily="@font/nunito"
+    android:textSize="16sp"
 android:text="You have items from a different shop in your cart. Do you want to clear the cart and add this item?"
 android:paddingBottom="16dp" />
 
@@ -35,7 +42,7 @@ android:orientation="horizontal">
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:background="@drawable/greenbuttongradent"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/nunito"
          />
 
 <androidx.appcompat.widget.AppCompatButton
@@ -47,7 +54,7 @@ android:orientation="horizontal">
     android:layout_marginStart="15dp"
     android:textColor="@android:color/white"
     android:background="@drawable/greenbuttongradent"
-android:fontFamily="@font/roboto" />
+android:fontFamily="@font/nunito" />
 
 
 

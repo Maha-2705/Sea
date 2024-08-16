@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#2E2B2B</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="whitee">#F1E7E7</color>
     <color name="ash">#DDBFBBBB</color>
     <color name="textColor">#53E88B</color>
     <color name="light_grey">#EBEDF0</color>
@@ -14,8 +15,12 @@
     <color name="liteblue1">#E5F3FD</color>
     <color name="iconColor">#FEAD1D</color>
     <color name="yellow">#EDF48A</color>
+    <!-- res/values/colors.xml -->
+
+
     <color name="colorPrimary">#5B1DCE</color>
     <color name="Lgreen">#AAEAC4</color>
+    <color name="Lgreenn">#f09819</color>
     <color name="lblue">#EAEAED</color>
     <color name="blue">#4274DF</color>
     <color name="navy">#ff512f</color>
@@ -25,7 +30,7 @@
     <color name="Lblack">#424040</color>
     <color name="pink">#F4399A</color>
     <color name="colorPrimaryDark">#311B92</color>
-    <color name="lpink">#F199B6</color>
+    <color name="lpink">#C9C3D1</color>
     <color name="llpink">#EDB1C5</color>
     <color name="Dark_navy">#1156ED</color>
     <color name="ThickAsh">#70727A</color>

@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:text="Edit Address"
         android:textColor="@color/black"
-        android:fontFamily="@font/roboto"
+        android:fontFamily="@font/nunito"
+        android:textSize="20sp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:paddingBottom="8dp" />
 
@@ -23,7 +24,9 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:fontFamily="@font/roboto"
+        android:lineSpacingExtra="7dp"
+        android:maxLines="4"
+        android:fontFamily="@font/nunito"
         android:hint="Enter new address" />
 
     <LinearLayout
@@ -36,21 +39,27 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/greenbuttongradent"
+            android:layout_height="50dp"
+            android:background="@drawable/search_shape"
+            android:textAllCaps="false"
             android:textSize="16sp"
+            android:backgroundTint="@color/navy"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:fontFamily="@font/roboto"
+            android:fontFamily="@font/nunito"
             android:text="Cancel" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_save"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/greenbuttongradent"
+            android:layout_height="50dp"
+            android:background="@drawable/search_shape"
+             android:textAllCaps="false"
             android:textSize="16sp"
+            android:backgroundTint="@color/navy"
             android:textColor="@color/white"
-            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:fontFamily="@font/nunito"
             android:text="Save"
             android:layout_marginStart="8dp" />
     </LinearLayout>

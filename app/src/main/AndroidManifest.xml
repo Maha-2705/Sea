@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -13,18 +14,21 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/fishfyicon"
         android:label="Fishfy"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Sea"
         tools:targetApi="34">
         <activity
-            android:name=".ui.activities.CurrentLocationBottom"
+            android:name=".ui.activities.DeleteAccountActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.Loading"
-            android:exported="false" />
+            android:name=".ui.activities.ProfileManualAddress"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activities.LocationNotAvailable"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.NotThereActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.LanguageActivity"
@@ -32,14 +36,12 @@
             android:label="@string/title_activity_language"
             android:theme="@style/Base.Theme.Sea" />
         <activity
-            android:name=".ui.activities.Discount"
-            android:exported="false" />
-        <activity
             android:name=".ui.activities.ViewOrderDetails"
             android:exported="false" />
         <activity
             android:name=".ui.activities.OrderStatusActivity"
             android:exported="true" />
+
         <activity
             android:name=".ui.activities.VerifyNumberActivity"
             android:exported="true" />
@@ -47,8 +49,12 @@
             android:name=".ui.activities.ManualMap"
             android:exported="true" />
         <activity
-            android:name=".ui.activities.ManualLocation"
+            android:name=".ui.activities.ProfileLanguageActivity"
             android:exported="true" />
+        <activity
+            android:name=".ui.activities.ManualLocation"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -60,9 +66,6 @@
         <activity
             android:name=".ui.activities.ContactusActivity"
             android:exported="true" />
-        <activity
-            android:name=".ui.activities.DetailsActivity"
-            android:launchMode="singleTop" />
         <activity
             android:name=".ui.activities.PayoutActivity"
             android:exported="false" />

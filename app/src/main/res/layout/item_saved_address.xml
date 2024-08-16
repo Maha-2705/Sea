@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="10dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="8dp"
     app:cardElevation="2dp"
     android:layout_marginTop="8dp"
     android:backgroundTint="@color/white">
@@ -14,32 +16,48 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
-
-        <TextView
-            android:id="@+id/Home"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:drawableStart="@drawable/home"
-            android:drawablePadding="15dp"
-            android:layout_marginTop="10dp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/iconimg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/home"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/Home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/navy"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+
 
         <EditText
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:lineSpacingExtra="7dp"
             android:layout_marginEnd="40dp"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="@color/black"
             android:background="@null"
             android:enabled="false"
             android:gravity="start"
+            android:textFontWeight="300"
             android:textAlignment="textStart"
-            android:fontFamily="@font/roboto"/>
+            android:fontFamily="@font/nunito"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,8 +72,8 @@
                 android:text="Edit"
                 android:textSize="16sp"
                 android:textColor="@color/navy"
-                android:fontFamily="@font/roboto"
-                android:paddingStart="10dp"/>
+                android:fontFamily="@font/nunito"
+                />
 
             <TextView
                 android:id="@+id/Delete"
@@ -64,7 +82,7 @@
                 android:text="Remove"
                 android:textSize="16sp"
                 android:textColor="@color/navy"
-                android:fontFamily="@font/roboto"
+                android:fontFamily="@font/nunito"
                 android:layout_marginStart="10dp"/>
 
         </LinearLayout>

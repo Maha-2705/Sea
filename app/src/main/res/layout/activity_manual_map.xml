@@ -43,17 +43,20 @@
             android:layout_marginRight="10dp"/>
     </RelativeLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_confirm_location"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginBottom="60dp"
+        android:textAllCaps="false"
+        android:textFontWeight="400"
+        android:background="@drawable/search_shape"
         android:backgroundTint="@color/navy"
-        android:textSize="16dp"
-        android:fontFamily="@font/roboto"
+        android:textSize="18dp"
+        android:fontFamily="@font/nunito"
         android:textColor="@color/white"
         android:text="Confirm Location" />
 </RelativeLayout>

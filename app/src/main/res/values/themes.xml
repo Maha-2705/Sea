@@ -21,6 +21,11 @@
         <item name="android:textColorPrimary">@color/navy</item>
     </style>
 
+    <style name="colored_checkBox" parent="Theme.AppCompat.Light">
+        <!-- selected checkbox color -->
+        <item name="colorAccent">@color/navy</item>
+        <item name="android:textColorPrimary">@color/navy</item>
+    </style>
     <style name="CustomDialogThemee" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
